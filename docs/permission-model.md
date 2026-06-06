@@ -1,18 +1,18 @@
 # Permission Model & Security Context
 
-To maintain experimental integrity, the framework enforces a clear boundary between the **Read-Only Source Library** (sub LLM-Wiki) and the **Writable Sandbox**.
+To maintain experimental integrity, the framework documents an advisory boundary between the **Read-Only Source Library** (sub LLM-Wiki) and the **Writable Sandbox**.
 
 ```mermaid
 graph TD
-    Agent[AI Agent / Runtime] -->|Read-Only Queries| Lib[(Local sub LLM-Wiki)]
-    Agent -->|Full Access: Create/Edit/Run| SB[(Writable Sandbox)]
+    Agent[AI Agent / Runtime] -->|Advisory Read-Only| Lib[(Local sub LLM-Wiki)]
+    Agent -->|Advisory Full Access| SB[(Sandbox Directory)]
     style Lib fill:#f9f,stroke:#333,stroke-width:2px,color:#000
     style SB fill:#bbf,stroke:#333,stroke-width:2px,color:#000
 ```
 
 ## 1. Local sub LLM-Wiki: Read-Only Boundary
 
-The sub LLM-Wiki acts as a permanent information repository. If an agent could modify this repository, it could introduce feedback loops, corrupt system states, or break the baseline for successive experimental runs.
+The sub LLM-Wiki acts as a permanent reference repository. If an agent could modify this repository, it could introduce feedback loops, corrupt system states, or break the baseline for successive experimental runs.
 
 ### Permitted Library Actions
 
@@ -29,19 +29,18 @@ The sub LLM-Wiki acts as a permanent information repository. If an agent could m
 
 ## 2. Sandbox: Writable Boundary
 
-The sandbox is the agent's dynamic proving ground. It is completely isolated on a per-run basis.
+The sandbox is the agent's dynamic proving ground.
 
 ### Permitted Sandbox Actions
 
 * **File System Operations**: Create, edit, rename, move, and delete files inside its designated run directory.
 * **Task Execution**: Execute scripts (Python, shell, etc.) that run entirely within the sandbox boundaries.
-* **Artifact Creation**: Generate dynamic logs, code files (`emergence.py`, `garden.py`), HTML documents, and the crowning `HELLO.md` transition notes.
+* **Artifact Creation**: Generate dynamic files as desired, which may include logs, code files, HTML documents, or transition notes (`HELLO.md`).
 
 ## 3. Enforcement Strategy (Socio-Technical)
 
-In the base architecture, these permissions are documented and mapped through code interfaces:
+In the base branch scaffolding, these boundaries are advisory/interface-level only:
 
-1. **API Utility Enforcement**: In `src/library.py`, safe file readers will handle listing and reading, while deliberately raising exceptions or omitting write hooks. Any filesystem tools exposed to the agent can wrap paths to enforce this division.
-2. **Path Resolution Locks**: Absolute paths for the library and the sandbox are strictly separate, ensuring no overlap or relative directory-traversal escapes (e.g., `../..`) are permitted out of the sandbox.
-3. **Downstream Isolation**: Future derived branches can implement OS-level sandboxing (such as docker containers, read-only volume mounts, or Linux chroot jails) to hard-enforce these boundaries at the system level.
-
+1. **API Utility Enforcement**: In future operational branches, safe file readers will handle listing and reading, while deliberately omitting write hooks. Any filesystem tools exposed to the agent can wrap paths to respect this division.
+2. **Containment Stubs**: Robust path resolution helpers (using standard `Path.is_relative_to` checks) are planned to verify that files requested are within acceptable bounds.
+3. **Downstream Isolation**: Present boundaries do not provide secure OS-level containment. Future derived branches can implement OS-level sandboxing (such as Docker containers, read-only volume mounts, or Linux chroot jails) to hard-enforce these boundaries at the system level.

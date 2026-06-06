@@ -1,6 +1,6 @@
 # Local Free-Directory Agent Experiment Framework
 
-A continuous experimental environment inspired by Andrej Karpathy's "free-directory" AI agent experiment ("Version A"), augmented with a read-only local reference sub LLM-Wiki.
+A generic foundation scaffolding inspired by Andrej Karpathy's "free-directory" AI agent experiment ("Version A"), augmented with a read-only local reference sub LLM-Wiki.
 
 This repository establishes a generic, clean **base (foundation) branch** from which developers and researchers can derive downstream feature branches and individual runs.
 
@@ -8,12 +8,12 @@ This repository establishes a generic, clean **base (foundation) branch** from w
 
 ## 1. Core Architectural Concept
 
-The agent operates on an open-ended loop:
+The goal is to observe how read-only source/library access conditions free agent exploration.
 
-$$\text{Karpathy Free-Directory Model (Go)} + \text{Read-Only sub LLM-Wiki} + \dots \implies \text{Emergent Artifact Exploration}$$
+$$\text{Karpathy Free-Directory Model (Go)} + \text{Read-Only sub LLM-Wiki} \implies \text{Open Observation of Free Agent Exploration}$$
 
-* **Writable Sandbox (`sandbox/`):** A clean playground where individual executor runs (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`) are instantiated. The agent is granted full capability to read, write, edit, and run scripts inside this zone. It writes a crowning `HELLO.md` to communicate its trajectory to future runs.
-* **Read-Only Library Source (`library_sample/`):** A structure simulating a local sub LLM-Wiki (carrying context directories like `notes/` and files like `current_state.md`). The agent has safe, read-only search and file-retrieval helpers to discover instructions and references without the capacity to mutate documents.
+* **Writable Sandbox (`sandbox/`):** A playground where individual executor runs (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`) can be instantiated. The agent is granted advisory capability to read, write, edit, and run scripts inside this zone. It may leave behind a `HELLO.md` or other unstructured artifacts to communicate its trajectory to future runs.
+* **Read-Only Library Source (`library_sample/`):** A structure simulating a local sub LLM-Wiki (carrying context directories like `notes/` and files like `current_state.md`). In future feature branches, the agent will have safe, read-only search and file-retrieval helpers to discover instructions and references without the capacity to mutate documents. Present boundaries in the base branch are advisory/interface-level only; OS-level containment is deferred to future work.
 
 ---
 
@@ -35,13 +35,13 @@ This foundation branch is organized as follows:
 │   ├── index.md
 │   └── trace.md
 ├── sandbox/                   # Placeholders for generated sandbox instances (git-ignored)
-├── src/                       # Complete structural framework scaffolding
+├── src/                       # Non-operational structural scaffolding
 │   ├── __init__.py
-│   ├── config.py              # Central path configuration and safety validation
-│   ├── library.py             # Safe, read-only filesystem querying APIs
-│   ├── sandbox.py             # Sandbox manager executing dynamic instantiation
-│   └── agent.py               # Main agent harness and prompt builders
-├── tests/                     # Verification tests (pytest setup)
+│   ├── config.py              # Central path configuration placeholders
+│   ├── library.py             # Advisory read-only filesystem querying interface
+│   ├── sandbox.py             # Sandbox manager interface stubs
+│   └── agent.py               # Main agent harness and prompt stubs
+├── tests/                     # Verification tests (pytest setup for scaffolding)
 │   └── test_framework.py
 ├── .gitignore                 # Custom git filters ignoring Python, IDE, and dynamic runs
 ├── pyproject.toml             # Modern package config & dependencies manager
@@ -90,4 +90,4 @@ pytest -v
 To learn map boundaries and permission models, read [docs/permission-model.md](docs/permission-model.md).
 Continuous task phases and deferred capabilities can be explored in [docs/roadmap.md](docs/roadmap.md).
 
-For branch derivations rules, consult [docs/roadmap.md#part-2-how-to-derive-new-branches](docs/roadmap.md).
+For branch derivations rules, consult [docs/roadmap.md](docs/roadmap.md).

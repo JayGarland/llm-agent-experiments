@@ -1,56 +1,74 @@
 """
-Unit Tests for the Base Experiment Framework.
+Unit Tests for the Base Experiment Framework (Repaired Scaffolding).
 """
 
-import os
 import pytest
 from pathlib import Path
 import tempfile
-import json
+from src.library import verify_and_resolve_path, LibraryAccessError, list_library_files, read_library_file
 from src.sandbox import SandboxManager
-from src.library import _resolve_safe_path, list_library_files, LibraryAccessError
-from src.config import READ_ONLY_LIBRARY_PATH
+from src.agent import AgentRunner
+from src.config import validate_config
 
-def test_sandbox_creation_and_population():
+def test_robust_path_verification():
     """
-    Verifies that SandboxManager correctly makes a unique directory,
-    populates instructions, and registers log metadata.
+    Verifies that the path verification containment utility correctly prevents directory traversal.
     """
     with tempfile.TemporaryDirectory() as temp_dir:
-        temp_root = Path(temp_dir)
-        manager = SandboxManager(sandbox_root=temp_root)
+        base_dir = Path(temp_dir).resolve()
         
-        # Test creation of run directory
-        run_path = manager.create_run_directory()
-        assert run_path.exists()
-        assert run_path.is_dir()
-        assert "run-" in run_path.name
+        # Create a nested file and directory
+        nested_dir = base_dir / "nested"
+        nested_dir.mkdir()
+        nested_file = nested_dir / "test.txt"
+        nested_file.write_text("content", encoding="utf-8")
         
-        # Test population
-        prompt_file = manager.populate_run_directory(run_path)
-        assert prompt_file.exists()
-        assert "LLM AGENT FREE-DIRECTORY EXPERIMENT INSTRUCTIONS" in prompt_file.read_text(encoding="utf-8")
+        # Verify valid resolves succeed
+        resolved = verify_and_resolve_path("nested/test.txt", base_dir)
+        assert resolved == nested_file
+        
+        # Verify path escape attempts raise LibraryAccessError
+        with pytest.raises(LibraryAccessError):
+            verify_and_resolve_path("../escape.txt", nested_dir)
 
-def test_library_safe_path_resolution():
+def test_non_operational_scaffolding_stubs():
     """
-    Verifies that safe path resolution raises errors if an escape is attempted.
+    Verifies that all operational methods in the base scaffolding raise NotImplementedError.
+    This guarantees that the base branch is strictly non-operational.
     """
-    # Safe sub-path relative to library base
-    safe_path = _resolve_safe_path("index.md")
-    assert safe_path.exists()
-    assert safe_path.is_file()
+    # Config stubs
+    with pytest.raises(NotImplementedError):
+        validate_config()
+        
+    # Library stubs
+    with pytest.raises(NotImplementedError):
+        list_library_files()
+        
+    with pytest.raises(NotImplementedError):
+        read_library_file("index.md")
+        
+    # Sandbox stubs
+    manager = SandboxManager()
+    with pytest.raises(NotImplementedError):
+        manager.create_run_directory()
+        
+    with pytest.raises(NotImplementedError):
+        manager.populate_run_directory(Path("dummy"))
+        
+    with pytest.raises(NotImplementedError):
+        manager.log_run_metadata(Path("dummy"))
+        
+    with pytest.raises(NotImplementedError):
+        manager.execute_new_run()
+        
+    # Agent stubs
+    runner = AgentRunner(Path("dummy"))
+    with pytest.raises(NotImplementedError):
+        runner.gather_system_context()
+        
+    with pytest.raises(NotImplementedError):
+        runner.build_system_prompt("dummy_summary")
+        
+    with pytest.raises(NotImplementedError):
+        runner.run_agent_turn()
 
-    # Escape attempt: outside of library path should throw a LibraryAccessError
-    with pytest.raises(LibraryAccessError):
-        _resolve_safe_path("../../../etc/passwd")
-
-def test_list_library_files():
-    """
-    Verifies that library file loading lists files within sample structures.
-    """
-    files = list_library_files()
-    assert len(files) > 0
-    # Ensure standard files are matched
-    assert "index.md" in files
-    assert "current_state.md" in files
-    assert "trace.md" in files
