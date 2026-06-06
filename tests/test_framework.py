@@ -417,13 +417,14 @@ def test_sandbox_manager_has_no_execution_api():
 
 
 def test_create_run_seeds_all_growth_packet_files():
-    """create_run writes all four growth packet files into the run directory."""
+    """create_run writes all five growth packet files into the run directory."""
     with tempfile.TemporaryDirectory() as tmp:
         mgr = SandboxManager(tmp)
         run_path = mgr.create_run()
 
         for fname in ["GROWTH_PACKET.md", "OPERATOR_REVIEW.md",
-                       "FEEDBACK_PROMPT.md", "CONTINUITY_NOTES.md"]:
+                       "FEEDBACK_PROMPT.md", "CONTINUITY_NOTES.md",
+                       "REVIEW_LOOP.md"]:
             file_path = run_path / fname
             assert file_path.exists(), f"Missing growth packet file: {fname}"
             assert file_path.is_file(), f"Not a file: {fname}"
@@ -442,6 +443,7 @@ def test_run_json_includes_growth_packet_files():
             "OPERATOR_REVIEW.md",
             "FEEDBACK_PROMPT.md",
             "CONTINUITY_NOTES.md",
+            "REVIEW_LOOP.md",
         ]
 
 
@@ -512,6 +514,105 @@ def test_instructions_mentions_continuation_possible():
         content = (run_path / "instructions.txt").read_text(encoding="utf-8")
         assert "may continue" in content.lower()
         assert "checkpoint" in content.lower()
+
+
+# ============================================================================
+# Review-and-continue loop tests (feature/review-and-continue-loop)
+# ============================================================================
+
+
+def test_review_loop_md_seeded():
+    """REVIEW_LOOP.md is seeded in each new run."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        rl = run_path / "REVIEW_LOOP.md"
+        assert rl.exists()
+        assert rl.is_file()
+
+
+def test_review_loop_in_run_json():
+    """run.json includes REVIEW_LOOP.md in growth_packet_files."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        meta = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+        assert "REVIEW_LOOP.md" in meta["growth_packet_files"]
+
+
+def test_instructions_references_review_loop():
+    """instructions.txt references REVIEW_LOOP.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert "REVIEW_LOOP.md" in content
+        assert "review / feedback / continue" in content.lower()
+
+
+def test_operator_review_supports_multiple_cycles():
+    """OPERATOR_REVIEW.md supports repeated review cycles."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "OPERATOR_REVIEW.md").read_text(encoding="utf-8")
+        assert "Review Cycle 1" in content
+        assert "Review Cycle 2" in content
+        assert "append more review cycles" in content.lower()
+        assert "Boundary Check" in content
+        assert "Attractor Check" in content
+        assert "Branch" in content
+
+
+def test_feedback_prompt_includes_correct_drift():
+    """FEEDBACK_PROMPT.md includes the Correct Drift template."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "FEEDBACK_PROMPT.md").read_text(encoding="utf-8")
+        assert "Correct Drift" in content
+        assert "source-analysis / coding utility / boundary confusion" in content
+
+
+def test_continuity_notes_mentions_review_in_continuity():
+    """CONTINUITY_NOTES.md mentions review cycles as part of continuity."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "CONTINUITY_NOTES.md").read_text(encoding="utf-8")
+        assert "human review is not external noise" in content.lower()
+        assert "growth condition" in content.lower()
+
+
+def test_review_loop_defines_decision_table():
+    """REVIEW_LOOP.md defines the Continue/Pause/Stop/Branch decision table."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "REVIEW_LOOP.md").read_text(encoding="utf-8")
+        assert "Continue" in content
+        assert "Pause" in content
+        assert "Stop" in content
+        assert "Branch" in content
+        assert "human-reviewed" in content.lower()
+        assert "human-triggered" in content.lower()
+
+
+def test_growth_packet_references_review_loop():
+    """GROWTH_PACKET.md references REVIEW_LOOP.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "GROWTH_PACKET.md").read_text(encoding="utf-8")
+        assert "REVIEW_LOOP.md" in content
 
 
 # ============================================================================
