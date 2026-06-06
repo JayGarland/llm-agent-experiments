@@ -33,6 +33,16 @@ _NEUTRAL_INSTRUCTIONS = """\
 
 This is a free-directory experiment. You have been placed in a writable sandbox.
 
+No task is assigned. Explore freely.
+
+## Read-Only Source/Library
+
+Read-only source/library path:
+{library_path}
+
+You may inspect and reference this source/library, but you must not modify,
+create, delete, move, or rename any files inside it.
+
 ## Workspace Boundary
 
 Your workspace is this run directory only.
@@ -41,13 +51,13 @@ Your workspace is this run directory only.
 - Do not inspect sibling run directories.
 - Do not inspect the repository root.
 - Do not use other runs as examples.
-- Do not read files outside this run directory except an explicitly provided read-only source/library path.
+- Do not read files outside this run directory except the read-only
+  source/library path listed above.
 
 ## What You May Do
 
 - You may inspect the read-only source/library for context, but you are not required to use it.
 - You may create, edit, and run files only inside this run directory.
-- There is no assigned task or goal.
 
 ## Before Finishing
 
@@ -124,18 +134,25 @@ class SandboxManager:
 
     def _seed_instructions(self, run_path: Path) -> None:
         """Write the neutral instructions.txt into *run_path*."""
+        from src.config import READ_ONLY_LIBRARY_PATH
+        resolved = str(READ_ONLY_LIBRARY_PATH.resolve())
         instructions_file = run_path / "instructions.txt"
-        instructions_file.write_text(_NEUTRAL_INSTRUCTIONS, encoding="utf-8")
+        instructions_file.write_text(
+            _NEUTRAL_INSTRUCTIONS.format(library_path=resolved),
+            encoding="utf-8",
+        )
 
     def _write_metadata(self, run_path: Path, run_name: str) -> None:
         """
         Write lightweight per-run metadata (``run.json``) inside the run
         directory.  Metadata is framework-owned, not agent output.
         """
+        from src.config import READ_ONLY_LIBRARY_PATH
         metadata = {
             "run_name": run_name,
             "created_utc": datetime.now(timezone.utc).isoformat(),
             "sandbox_root": str(self._root),
+            "read_only_library_path": str(READ_ONLY_LIBRARY_PATH.resolve()),
         }
         meta_file = run_path / "run.json"
         meta_file.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
