@@ -43,6 +43,5 @@ Our generic base architecture is composed of:
 3. **Core Scaffolding (`src/`):** Minimal, robust python modules organizing config management, sandbox creation, and agent launching.
 
 For details on security boundaries and file operations, please refer to [docs/permission-model.md](permission-model.md).
-
 For our future development goals, please refer to [docs/roadmap.md](roadmap.md).
 
