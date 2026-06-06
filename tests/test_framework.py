@@ -1,11 +1,14 @@
 """
-Unit Tests — Read-Only Source/Library Access Layer.
+Unit Tests — Read-Only Source/Library Access Layer + Sandbox Manager.
 
-This branch (feature/read-only-library-access) implements only the library access layer.
-Tests for sandbox creation, agent execution, watcher triggers, and provider integration
+feature/read-only-library-access : library access layer.
+feature/sandbox-manager           : writable sandbox management (this branch).
+
+Tests for agent execution, watcher triggers, and provider integration
 belong to later branches.
 """
 
+import json
 import pytest
 from pathlib import Path
 import tempfile
@@ -15,6 +18,12 @@ from src.library import (
     LibraryAccessError,
     verify_and_resolve_path,
 )
+from src.sandbox import SandboxManager, SandboxError
+
+
+# ============================================================================
+# Library access tests (from feature/read-only-library-access)
+# ============================================================================
 
 
 # ---------------------------------------------------------------------------
@@ -203,3 +212,185 @@ def test_list_library_files_convenience():
     assert result == [str(p) for p in expected]
 
 
+# ============================================================================
+# Sandbox manager tests (feature/sandbox-manager)
+# ============================================================================
+
+
+# ---------------------------------------------------------------------------
+# Construction
+# ---------------------------------------------------------------------------
+
+def test_sandbox_constructor_rejects_missing_root():
+    """SandboxManager raises SandboxError if the root does not exist."""
+    with pytest.raises(SandboxError):
+        SandboxManager("/nonexistent/sandbox/99")
+
+
+def test_sandbox_constructor_rejects_file_as_root():
+    """SandboxManager raises if root is a file, not a directory."""
+    with tempfile.NamedTemporaryFile(delete=False) as f:
+        f.write(b"data")
+        tmp_file = f.name
+    try:
+        with pytest.raises(SandboxError):
+            SandboxManager(tmp_file)
+    finally:
+        Path(tmp_file).unlink()
+
+
+def test_sandbox_root_property():
+    """.root returns the resolved absolute path."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        assert mgr.root == Path(tmp).resolve()
+
+
+# ---------------------------------------------------------------------------
+# create_run — directory creation
+# ---------------------------------------------------------------------------
+
+def test_create_run_creates_directory_under_root():
+    """create_run() creates a directory inside the sandbox root."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        mgr = SandboxManager(root)
+        run_path = mgr.create_run()
+
+        assert run_path.exists()
+        assert run_path.is_dir()
+        assert run_path.is_relative_to(mgr.root)
+
+
+def test_create_run_naming_scheme():
+    """The run directory name follows the run-YYYYMMDD-HHMMSS-<shortid> pattern."""
+    import re
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+        name = run_path.name
+        assert re.match(r"^run-\d{8}-\d{6}-[0-9a-f]{6}$", name), f"Unexpected name: {name}"
+
+
+def test_create_run_unique_each_call():
+    """Two consecutive create_run() calls produce different directories."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run1 = mgr.create_run()
+        run2 = mgr.create_run()
+        assert run1 != run2
+
+
+def test_create_run_does_not_escape_root():
+    """Even with a deeply nested root, the created directory stays inside."""
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp) / "nested" / "sandbox"
+        root.mkdir(parents=True)
+        mgr = SandboxManager(root)
+        run_path = mgr.create_run()
+        assert run_path.is_relative_to(root.resolve())
+
+
+# ---------------------------------------------------------------------------
+# Seeded instructions
+# ---------------------------------------------------------------------------
+
+def test_create_run_seeds_instructions():
+    """create_run writes a neutral instructions.txt inside the run directory."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+        instructions = run_path / "instructions.txt"
+
+        assert instructions.exists()
+        content = instructions.read_text(encoding="utf-8")
+
+        # Neutrality checks
+        assert "no assigned task" in content.lower()
+        assert "read-only" in content.lower()
+        assert "HELLO.md" in content
+        # Must NOT assign a specific goal
+        assert "your task is" not in content.lower()
+
+
+def test_create_run_instructions_do_not_require_library():
+    """The seeded instructions must not force the agent to use the library."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert "not required to use it" in content
+
+
+# ---------------------------------------------------------------------------
+# Per-run metadata
+# ---------------------------------------------------------------------------
+
+def test_create_run_writes_run_json():
+    """create_run writes a run.json inside the run directory (not globally)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+        meta_file = run_path / "run.json"
+
+        assert meta_file.exists()
+        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+        assert "run_name" in meta
+        assert "created_utc" in meta
+        assert "sandbox_root" in meta
+
+
+# ---------------------------------------------------------------------------
+# Does not touch source/library
+# ---------------------------------------------------------------------------
+
+def test_create_run_does_not_touch_library():
+    """
+    create_run must not read, write, or otherwise interact with the
+    read-only source/library.  It operates exclusively inside the sandbox.
+    """
+    with tempfile.TemporaryDirectory() as sandbox_tmp:
+        # Use a real library path but verify nothing is written there
+        from src.config import READ_ONLY_LIBRARY_PATH
+        before = sorted(READ_ONLY_LIBRARY_PATH.rglob("*"))
+
+        mgr = SandboxManager(sandbox_tmp)
+        mgr.create_run()
+
+        after = sorted(READ_ONLY_LIBRARY_PATH.rglob("*"))
+        assert before == after, (
+            "SandboxManager.create_run() modified the source/library — "
+            "this must not happen."
+        )
+
+
+# ---------------------------------------------------------------------------
+# No agent execution
+# ---------------------------------------------------------------------------
+
+def test_sandbox_manager_has_no_execution_api():
+    """
+    SandboxManager must not expose any method that implies agent execution,
+    LLM calls, or run orchestration.  Only sandbox creation and seeding.
+    """
+    mgr = SandboxManager(tempfile.gettempdir())
+    public = {name for name in dir(mgr) if not name.startswith("_")}
+
+    allowed = {"root", "create_run"}
+    unexpected = public - allowed
+
+    # Python built-in dunders that appear on every object
+    builtins = {
+        "__class__", "__dict__", "__doc__", "__init__", "__module__",
+        "__new__", "__weakref__", "__dir__", "__format__",
+        "__getattribute__", "__hash__", "__reduce__", "__reduce_ex__",
+        "__repr__", "__setattr__", "__sizeof__", "__str__",
+        "__subclasshook__", "__delattr__", "__eq__", "__ge__", "__gt__",
+        "__le__", "__lt__", "__ne__",
+    }
+    unexpected -= builtins
+
+    assert unexpected == set(), (
+        f"SandboxManager exposes unexpected public names: {unexpected}. "
+        "Agent execution belongs to a later branch."
+    )

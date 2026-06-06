@@ -49,13 +49,16 @@ This document outlines the evolutionary development process of the Free-Director
   * Focused unit tests covering: valid reads, breakout rejection, absolute-path rejection, missing-file handling, and no-write-API verification.
 * **Boundary**: This branch implements only the read-only source/library access layer. Sandbox writing, agent execution, watcher triggers, provider integration, and metadata logging belong to later branches.
 
-### Phase 4: Sandbox Creation Utilities & Logging (`feature/sandbox-manager`)
+### Phase 4: Sandbox Creation Utilities (`feature/sandbox-manager`) ✅ *Implemented*
 
-* **Objective**: Implement utilities to dynamically instantiate isolated run directories inside `sandbox/` and log historical metadata.
+* **Objective**: Implement utilities to dynamically instantiate isolated run directories inside `sandbox/` and write lightweight per-run metadata.
 * **Deliverables**:
-  * Working `SandboxManager` class within `src/sandbox.py`.
-  * Methods to create a run directory (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`) and seed it with introductory instructions (`instructions.txt`).
-  * Metadata registries logging runs.
+  * `SandboxManager` class in `src/sandbox.py` accepting a configured sandbox root path.
+  * `create_run()` creating timestamped run directories (`run-YYYYMMDD-HHMMSS`) under the sandbox root.
+  * Neutral `instructions.txt` seeded into every run — no assigned task, no library-uptake pressure.
+  * Per-run `run.json` metadata written inside each run directory (framework-owned, not agent output).
+  * Focused unit tests covering: directory creation, naming scheme, root containment, instruction neutrality, library non-interference, and no-execution-API verification.
+* **Boundary**: This branch implements only writable sandbox management. Source/library reading is handled by `feature/read-only-library-access`. Agent execution, watcher triggers, provider integration, and OS-level containment belong to later branches.
 
 ### Phase 5: Writable Sandbox Agent Runner (`feature/agent-prompt-runner`)
 
