@@ -148,3 +148,4 @@ cython_debug/
 sandbox/run-*/
 library_sample/run-*/
 *.local
+/docs/manuals/personal_manual
