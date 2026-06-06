@@ -10,7 +10,7 @@ This repository establishes a generic, clean **base (foundation) branch** from w
 
 The goal is to observe how read-only source/library access conditions free agent exploration.
 
-$$\text{Karpathy Free-Directory Model (Go)} + \text{Read-Only sub LLM-Wiki} \implies \text{Open Observation of Free Agent Exploration}$$
+$$\text{Karpathy Version A free-directory setup} + \text{Read-Only sub LLM-Wiki} + \text{Writable Sandbox} \implies \text{Open observation of how source/library conditions free agent exploration}$$
 
 * **Writable Sandbox (`sandbox/`):** A playground where individual executor runs (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`) can be instantiated. The agent is granted advisory capability to read, write, edit, and run scripts inside this zone. It may leave behind a `HELLO.md` or other unstructured artifacts to communicate its trajectory to future runs.
 * **Read-Only Library Source (`library_sample/`):** A structure simulating a local sub LLM-Wiki (carrying context directories like `notes/` and files like `current_state.md`). In future feature branches, the agent will have safe, read-only search and file-retrieval helpers to discover instructions and references without the capacity to mutate documents. Present boundaries in the base branch are advisory/interface-level only; OS-level containment is deferred to future work.

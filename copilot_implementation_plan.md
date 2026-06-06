@@ -40,7 +40,7 @@ Expose a simple CLI (e.g., python -m src.sandbox create-run) for developers or C
 4 Write the free‑exploration agent harness
 In src/agent.py, define an AgentRunner class responsible for executing a free‑form exploration:
 Initialize with a sandbox path and configuration, giving the agent read‑only access to the configured library path.
-Present the free prompt to the agent: instruct the AI to explore freely within the sandbox directory, with read‑only access to the library, leaving a HELLO.md summarizing what it did, what influenced its exploration, and any suggestions for continuation.
+Present the free prompt to the agent: instruct the AI to explore freely within the sandbox directory, with read‑only access to the library; it may leave a HELLO.md or other unstructured artifacts to communicate what it did. The agent may inspect or reference the read-only source/library, but is not required to use it.
 Run the model invocation (e.g., call to openai.ChatCompletion or other provider). Keep this stub generic; actual API calls will be added in derived branches.
 Write outputs returned by the agent into the sandbox directory (e.g., create files or scripts). Ensure that the agent never writes outside the sandbox.
 Leave TODO markers where future branches will implement concrete agent calls, error handling, and security checks.
@@ -49,7 +49,7 @@ Update documentation to describe how AgentRunner should be extended in downstrea
 Create a docs/library-usage.md that explains how the AI can reference the local sub LLM‑Wiki:
 The library path is passed as context to the agent, but the agent must not modify any files within it.
 Describe the expected structure (e.g., index.md, current_state.md, trace.md, notes/, raw/), without including actual proprietary content.
-Encourage agents to quote or summarize relevant information when exploring, while leaving the original library untouched.
+The agent may inspect or reference the read-only source/library, but is not required to use it.
 Include helper functions in src/library.py to safely read files from the library (e.g., read_file(relative_path)) and to list available files. These helpers should enforce read‑only behaviour by raising an exception on any write attempt.
 Document how future branches can extend these helpers to perform semantic search or embed retrieval (e.g., hooking up to an embedding model) if needed.
 6 Outline future tasks (not in base branch)

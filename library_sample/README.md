@@ -2,7 +2,7 @@
 
 This directory represents a sample of a local sub LLM-Wiki project that acts as the "source/library" for the AI Agent.
 
-In full runs, this library path can be configured to point to a real knowledge base, research dump, or documentation repository. The agent is granted **strict read-only** access to this repository. It may inspect and read files to guide its exploration, but it must never modify, add, or delete any content within this library.
+In full runs, this library path can be configured to point to a real knowledge base, research dump, or documentation repository. This directory is intended for read-only access at the interface/documentation level; OS-level enforcement is future work. The agent may inspect and read files to guide its exploration, but it must not modify, add, or delete any content within this library.
 
 ## Structure of the sub LLM-Wiki
 
