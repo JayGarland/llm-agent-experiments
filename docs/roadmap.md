@@ -3,15 +3,17 @@
 This document outlines the evolutionary development process of the Free-Directory Agent Experiment Framework. As specified by our design principles, we implement incrementally, creating clean, task-specific feature branches off the [base](/) (foundation) branch.
 
 ```text
-       [base branch] (You are here: Scaffolding, Documentation & Concepts)
+       [base branch] (Scaffolding, Documentation & Concepts)
              │
-             ├──► [feature/config-and-path-management]
+             ├──► [feature/read-only-library-access] ✅
              │
-             ├──► [feature/library-reader]
+             ├──► [feature/sandbox-manager] ✅
              │
-             ├──► [feature/sandbox-manager]
+             ├──► [feature/manual-version-a-run] ✅  ← You are here
              │
              ├──► [feature/agent-prompt-runner]
+             │
+             ├──► [feature/config-and-path-management]
              │
              └──► [feature/watcher-trigger]
                     │
@@ -60,7 +62,17 @@ This document outlines the evolutionary development process of the Free-Director
   * Focused unit tests covering: directory creation, naming scheme, root containment, instruction neutrality, library non-interference, and no-execution-API verification.
 * **Boundary**: This branch implements only writable sandbox management. Source/library reading is handled by `feature/read-only-library-access`. Agent execution, watcher triggers, provider integration, and OS-level containment belong to later branches.
 
-### Phase 5: Writable Sandbox Agent Runner (`feature/agent-prompt-runner`)
+### Phase 5: Manual Version A Run (`feature/manual-version-a-run`) ✅ *Implemented*
+
+* **Objective**: Make the project usable for a first manual Karpathy Version A dry run with any external AI agent.
+* **Deliverables**:
+  * `docs/manual-version-a-run.md` — step-by-step guide for preparing, launching, and reviewing a manual experiment run.
+  * `docs/run-checklist.md` — structured before/during/after checklist for each run.
+  * `scripts/prepare_manual_run.py` — helper that creates a sandbox run directory and prints exact launch instructions.
+  * Updated `README.md` with a "First Manual Run (MVP)" section.
+* **Boundary**: No automated agent execution, no LLM provider integration, no watcher triggers. The user orchestrates the experiment with an external AI agent (Claude Code, Copilot Agent, Codex, etc.).
+
+### Phase 6: Writable Sandbox Agent Runner (`feature/agent-prompt-runner`)
 
 * **Objective**: Build execution controllers using non-coercive neutral prompts to direct how the model is called and how its outputs are collected.
 * **Deliverables**:

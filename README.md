@@ -41,6 +41,8 @@ This foundation branch is organized as follows:
 │   ├── library.py             # Advisory read-only filesystem querying interface
 │   ├── sandbox.py             # Sandbox manager interface stubs
 │   └── agent.py               # Main agent harness and prompt stubs
+├── scripts/                   # Helper scripts for manual operations
+│   └── prepare_manual_run.py  # Create a sandbox run + print launch instructions
 ├── tests/                     # Verification tests (pytest setup for scaffolding)
 │   └── test_framework.py
 ├── .gitignore                 # Custom git filters ignoring Python, IDE, and dynamic runs
@@ -91,3 +93,28 @@ To learn map boundaries and permission models, read [docs/permission-model.md](d
 Continuous task phases and deferred capabilities can be explored in [docs/roadmap.md](docs/roadmap.md).
 
 For branch derivations rules, consult [docs/roadmap.md](docs/roadmap.md).
+
+---
+
+## 5. First Manual Run (MVP)
+
+You can run a **manual Karpathy Version A experiment** right now using any
+external AI agent (Claude Code, GitHub Copilot Agent, Codex, Cursor, etc.):
+
+```powershell
+# 1. Prepare a sandbox run directory
+python scripts/prepare_manual_run.py
+
+# 2. Open your AI agent in the printed run directory
+cd sandbox/run-*
+
+# 3. Give the agent this instruction:
+#    "Read instructions.txt and execute the experiment."
+```
+
+Full step-by-step guidance: **[docs/manual-version-a-run.md](docs/manual-version-a-run.md)**
+
+Before/during/after checklist: **[docs/run-checklist.md](docs/run-checklist.md)**
+
+This is the first usable MVP — no automated agent execution, no LLM provider
+integration. The agent runs externally and you observe the results.
