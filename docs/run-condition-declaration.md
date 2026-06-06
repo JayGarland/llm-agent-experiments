@@ -174,6 +174,40 @@ Platform choice is a **run condition**, not just an implementation detail.
 
 **Preferred:** `continuation-safe` same run directory (`read-hello-first` + `append-dont-erase`).
 
+### 12. Human Feedback Mode
+
+| Option | Description |
+|---|---|
+| `no-feedback` | Agent runs without human intervention. |
+| `review-only` | Human reviews artifacts after session, no mid-run feedback. |
+| `review-and-feedback` | Human reviews and injects feedback / correction into the run. |
+| `review-adjust-continue` | Human reviews, adjusts condition or source binding, then continues same run. |
+
+**Preferred for growth experiments:** `review-adjust-continue`.
+
+### 13. Continuation Mode
+
+| Option | Description |
+|---|---|
+| `single-session` | One session per run directory. |
+| `multi-session-same-run` | Multiple sessions in the same run directory, each building on prior files. |
+| `branch-from-run` | Create a new run branched from an existing run's file state. |
+| `re-enter-after-pause` | Later instance re-enters a paused run by reading the file surface. |
+
+**Preferred for growth experiments:** `multi-session-same-run` + `re-enter-after-pause`.
+
+---
+
+## Future Direction: Condition Modules
+
+The Run Condition Declaration variables above are moving toward a **modular
+prompt construction system** (`feature/prompt-module-registry` on the roadmap).
+Each variable will become a composable module that can be selected and
+assembled per run, rather than requiring a single monolithic prompt template.
+
+This phase documents the variables. Implementation of the module registry is
+deferred to the feature branch.
+
 ---
 
 ## Minimal Condition Declaration Template
@@ -191,6 +225,8 @@ output_posture: non-utility, trace-oriented, fragment-friendly
 executable_policy: markdown-only
 tool_mode: markdown-only-write
 platform: github-copilot-agent
+human_feedback_mode: review-adjust-continue
+continuation_mode: multi-session-same-run
 continuation_policy: continuation-safe
 ```
 

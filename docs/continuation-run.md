@@ -1,9 +1,27 @@
-# Continuation Run — Safe Second/Later Instance
+# Continuity & Continuation Model
 
-A continuation run places a **later AI agent instance** into an **existing**
-run directory. The previous instance's artifacts (including `HELLO.md`) are
-still present. The new instance must respect the same workspace boundaries
-and must not treat the previous instance's output as an assigned task.
+## Three-Layer Continuity
+
+Continuity is not only later-instance handoff. The framework defines three layers:
+
+| Layer | Description |
+|---|---|
+| **1. In-run continuity** | The agent grows within a single session — adding files, updating traces, building on its own earlier output inside the same run. |
+| **2. File-based continuity** | Files (`HELLO.md`, `TRACE.md`, `GROWTH_LOG.md`, fragments, operator notes) form a **practical memory surface** that persists after the session ends. |
+| **3. Later-instance continuity** | A later agent instance re-enters the run directory, reads the file surface, and may continue growing. Files are the bridge; there is no internal cross-session memory. |
+
+An agent can continue growing inside a run after human review, feedback, source
+update, or condition adjustment. The run directory is not a one-shot artifact
+— it is a **growth surface**.
+
+---
+
+## Continuation Run — Later Instance (Historical Prompt Retained)
+
+The prompt below is the **original continuation prompt (historical)**. It
+focuses narrowly on later-instance handoff. For the full growth loop including
+in-run continuity and human feedback, see the manuals and the condition-module
+direction in the roadmap.
 
 ---
 

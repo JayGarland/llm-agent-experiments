@@ -1,22 +1,27 @@
-# User Manual — v0.1 Base Manual
+# User Manual — Source-Conditioned Agent Growth Experiment Framework
 
-This is the generic user manual for the `v0.1-base-manual` release.
+This manual covers the current state of the project as it transitions from
+a manual Version A reproduction into a **source-conditioned agent growth
+experiment framework**.
 
----
+--- 
 
 ## 1. What This Project Is
 
-This project is a **local, manual experimental framework** for placing an AI
-agent in a writable sandbox directory with read-only access to a source/library
-(a local sub LLM-Wiki).
+This project is a **growth experiment framework**: AI agents operate in
+writable run directories with read-only source/library access (source-as-soil),
+human review / feedback, and multi-layered file-based continuity — observed
+as an open-ended growth process.
 
 The experiment is inspired by Andrej Karpathy's "Version A" free-directory
-agent experiment: an AI agent is placed in an empty directory with no assigned
-task and told simply to explore.
+agent experiment: an agent is placed in a writable directory with no assigned
+task. Our variant adds a **read-only source/library as soil** and a **human
+review / feedback loop**, observing how the agent grows over time under
+source-conditioned conditions.
 
-Our variant adds a **read-only source/library** — a local knowledge base that
-the agent may inspect but must not modify. We then observe how the presence
-of this source/library conditions the agent's free exploration.
+The experiment is **not a one-shot run**. It is a growth loop:
+create run → choose condition → launch → let it grow → human review →
+feedback / adjust → continue same run → pause / handoff → later re-entry.
 
 ---
 
@@ -35,6 +40,8 @@ This release is **not**:
 
 ## 3. Core Experiment Formula
 
+**Original formula (v0.1, historical):**
+
 ```
 Karpathy Version A free-directory setup
 + read-only local sub LLM-Wiki as source/library
@@ -42,9 +49,20 @@ Karpathy Version A free-directory setup
 = open observation of how source/library conditions free agent exploration
 ```
 
-The source/library is **not a task**. The agent is not asked to summarize,
-analyze, index, or update it. It is background soil — memory, atmosphere,
-a field of traces the agent may reference freely.
+**Current growth formula:**
+
+```
+Karpathy Version A free-directory setup
++ source-as-soil read-only library
++ writable run directory
++ variable condition modules
++ human review / feedback loop
++ file-based continuity surfaces
+= open-ended agent growth process under source-conditioned soil
+```
+
+The source/library is **soil** — background nutrition, memory, atmosphere.
+It is not a task to be analyzed or summarized.
 
 ---
 
@@ -195,6 +213,11 @@ Tell the agent:
 
 > Read instructions.txt and execute the experiment.
 
+> **Note:** This prompt ("Prompt 1") is retained as a **baseline / control**
+> launch only. It is not the recommended growth prompt — it tends to cause
+> source-analysis collapse. For growth experiments, use the condition-module
+> approach described in [docs/run-condition-declaration.md](../run-condition-declaration.md).
+
 The agent will read `instructions.txt`, which includes the workspace boundary,
 the resolved read-only source/library path, and the direction to explore freely.
 
@@ -277,9 +300,29 @@ Instance N+1  → reads HELLO.md → decides whether to continue
 
 ---
 
-## 10. How to Continue a Previous Run
+## 10. Continuity Model — Three Layers
 
-To run a later instance in the same run directory:
+Continuity is not only later-instance handoff. The framework defines three layers:
+
+| Layer | Description |
+|---|---|
+| **1. In-run continuity** | Agent grows within a single session — builds on its own earlier output. |
+| **2. File-based continuity** | Files (`HELLO.md`, `TRACE.md`, `GROWTH_LOG.md`, fragments, operator notes) form a practical memory surface. |
+| **3. Later-instance continuity** | A later agent re-enters the run, reads the file surface, may continue. Files are the bridge — no internal cross-session memory. |
+
+### Growth Loop
+
+```
+create run → choose condition → launch → let it grow
+→ human review → feedback / adjust → continue same run
+→ pause / handoff → later re-entry
+```
+
+### Later-Instance Continuation (Historical Prompt Retained)
+
+The prompt below is the original later-instance prompt. It captures layer 3
+only. For the full growth loop, see §7 and the condition-module direction in
+the roadmap.
 
 1. **Do not create a new run directory.** Enter the same run directory.
 2. Open the agent (verify workspace — see §7).

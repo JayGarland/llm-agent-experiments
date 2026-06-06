@@ -1,5 +1,9 @@
 # No-Executable Source-as-Soil Prompt
 
+> **Status: Historical early source-as-soil / trace-oriented prompt.**
+> Based on Run 006 findings. Not the final growth prompt architecture.
+> Retained for reference and comparison.
+
 Based on Run 006 and Run 008 findings. Give this prompt to the AI agent after
 opening it in the current run directory.
 
