@@ -170,8 +170,12 @@ The run directory contains:
 
 | File | Purpose |
 |---|---|
-| `instructions.txt` | The experiment instructions for the AI agent (includes the resolved library path) |
-| `run.json` | Framework-owned metadata (run name, timestamps, library path) |
+| `instructions.txt` | First entry point — experiment instructions for the AI agent (includes the resolved library path) |
+| `GROWTH_PACKET.md` | Run-local orientation for source-conditioned growth (source-as-soil, growth loop, continuity surfaces, operator feedback) |
+| `OPERATOR_REVIEW.md` | **Human-owned.** Review checklist, operator notes, feedback to inject, and continue/pause/stop decision |
+| `FEEDBACK_PROMPT.md` | Ready-to-use continuation prompt templates for same-run feedback loops |
+| `CONTINUITY_NOTES.md` | Three-layer continuity model (in-run, file-based, later-instance) with practical caveats |
+| `run.json` | Framework-owned metadata (run name, timestamps, library path, growth packet file list) |
 
 ### Step 4: Verify the Run Directory
 

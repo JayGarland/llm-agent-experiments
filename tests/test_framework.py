@@ -391,7 +391,7 @@ def test_sandbox_manager_has_no_execution_api():
     mgr = SandboxManager(tempfile.gettempdir())
     public = {name for name in dir(mgr) if not name.startswith("_")}
 
-    allowed = {"root", "create_run"}
+    allowed = {"root", "create_run", "GROWTH_PACKET_FILES"}
     unexpected = public - allowed
 
     # Python built-in dunders that appear on every object
@@ -409,6 +409,109 @@ def test_sandbox_manager_has_no_execution_api():
         f"SandboxManager exposes unexpected public names: {unexpected}. "
         "Agent execution belongs to a later branch."
     )
+
+
+# ============================================================================
+# Growth packet tests (feature/run-growth-packet)
+# ============================================================================
+
+
+def test_create_run_seeds_all_growth_packet_files():
+    """create_run writes all four growth packet files into the run directory."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        for fname in ["GROWTH_PACKET.md", "OPERATOR_REVIEW.md",
+                       "FEEDBACK_PROMPT.md", "CONTINUITY_NOTES.md"]:
+            file_path = run_path / fname
+            assert file_path.exists(), f"Missing growth packet file: {fname}"
+            assert file_path.is_file(), f"Not a file: {fname}"
+
+
+def test_run_json_includes_growth_packet_files():
+    """run.json metadata records the seeded growth packet file list."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        meta = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+        assert "growth_packet_files" in meta
+        assert meta["growth_packet_files"] == [
+            "GROWTH_PACKET.md",
+            "OPERATOR_REVIEW.md",
+            "FEEDBACK_PROMPT.md",
+            "CONTINUITY_NOTES.md",
+        ]
+
+
+def test_instructions_references_growth_packet():
+    """instructions.txt tells the agent to read GROWTH_PACKET.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert "GROWTH_PACKET.md" in content
+        assert "read growth_packet.md" in content.lower()
+
+
+def test_operator_review_has_human_boundary():
+    """OPERATOR_REVIEW.md marks itself as human-owned."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "OPERATOR_REVIEW.md").read_text(encoding="utf-8")
+        assert "human-owned" in content.lower()
+        assert "must not overwrite" in content.lower()
+
+
+def test_feedback_prompt_includes_same_run_continuation():
+    """FEEDBACK_PROMPT.md includes a same-run continuation template."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "FEEDBACK_PROMPT.md").read_text(encoding="utf-8")
+        assert "Continue Same Run" in content
+        assert "Continue growing inside this same run directory" in content
+        assert "Do not create a new run directory" in content
+
+
+def test_continuity_notes_includes_three_layers():
+    """CONTINUITY_NOTES.md includes the three continuity layers."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "CONTINUITY_NOTES.md").read_text(encoding="utf-8")
+        assert "In-Run Continuity" in content
+        assert "File-Based Continuity" in content
+        assert "Later-Instance Continuity" in content
+        assert "practical continuity" in content.lower()
+
+
+def test_instructions_mentions_operator_review_boundary():
+    """instructions.txt tells the agent OPERATOR_REVIEW.md is human-owned."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert "OPERATOR_REVIEW.md" in content
+        assert "human-owned" in content.lower()
+
+
+def test_instructions_mentions_continuation_possible():
+    """instructions.txt signals that the run may continue after feedback."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert "may continue" in content.lower()
+        assert "checkpoint" in content.lower()
 
 
 # ============================================================================

@@ -15,9 +15,9 @@ clean, task-specific feature branches derived from `base`.
              ├──► [feature/run-condition-declaration] ✅
              ├──► [feature/per-run-library-path] ✅
              │
-             ├──► [docs/growth-framework-reset] ← You are here
+             ├──► [docs/growth-framework-reset] ✅
              │
-             ├──► [feature/run-growth-packet]
+             ├──► [feature/run-growth-packet] ← You are here
              ├──► [feature/prompt-module-registry]
              ├──► [feature/review-and-continue-loop]
              ├──► [feature/continuity-v2]
@@ -89,7 +89,7 @@ clean, task-specific feature branches derived from `base`.
   * Updated instruction tests to verify boundary language is present.
 * **Boundary**: Documentation/instruction hardening only. No OS-level sandboxing, no provider integration, no agent runner changes.
 
-### Phase 6: Growth Framework Reset (`docs/growth-framework-reset`) 🔄 *In Progress*
+### Phase 6: Growth Framework Reset (`docs/growth-framework-reset`) ✅ *Implemented*
 
 * **Objective**: Reframe project identity from one-shot manual Version A reproduction to source-conditioned agent growth experiment framework.
 * **Deliverables**:
@@ -101,11 +101,18 @@ clean, task-specific feature branches derived from `base`.
   * Condition modules introduced as formal future direction.
 * **Boundary**: Documentation/prompt-design only. No runtime code changed.
 
-### Phase 7: Run Growth Packet (`feature/run-growth-packet`)
+### Phase 7: Run Growth Packet (`feature/run-growth-packet`) ✅ *Implemented*
 
-* **Objective**: Define the file and metadata structure for a growth-oriented run (supersedes the minimal `instructions.txt` + `run.json` seed).
-* **Deliverables**: `GROWTH_LOG.md`, `CONDITION.md`, operator notes surface, run growth state file format.
-* **Boundary**: File format and seeding logic only. No agent execution.
+* **Objective**: Add a lightweight run-level growth packet to every new sandbox run, supporting source-conditioned growth, same-run review/feedback/continue loop, file-based continuity, and future-instance re-entry.
+* **Deliverables**:
+  * `GROWTH_PACKET.md` — run-local orientation for source-conditioned growth (source-as-soil, growth loop, continuity surfaces, operator feedback, boundary reminder).
+  * `OPERATOR_REVIEW.md` — human-owned review checklist with continue/pause/stop decision.
+  * `FEEDBACK_PROMPT.md` — ready-to-use same-run continuation prompt templates (Template A: Continue Same Run, Template B: Source Updated).
+  * `CONTINUITY_NOTES.md` — three-layer continuity model (in-run, file-based, later-instance) with practical caveats.
+  * Updated `instructions.txt` to reference growth packet files and signal that runs may continue after feedback.
+  * Updated `run.json` metadata with `growth_packet_files` field.
+  * 8 new tests covering growth packet seeding, metadata, instructions, and content verification (36 total).
+* **Boundary**: File seeding and instructions updates only. No watcher, runner, provider integration, or automation.
 
 ### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`)
 
