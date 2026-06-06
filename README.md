@@ -116,5 +116,7 @@ Full step-by-step guidance: **[docs/manual-version-a-run.md](docs/manual-version
 
 Before/during/after checklist: **[docs/run-checklist.md](docs/run-checklist.md)**
 
+Safe continuation runs (second/later instances): **[docs/continuation-run.md](docs/continuation-run.md)**
+
 This is the first usable MVP — no automated agent execution, no LLM provider
 integration. The agent runs externally and you observe the results.
