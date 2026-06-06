@@ -251,10 +251,36 @@ Runs are git‑ignored by default (`sandbox/run-*/` in `.gitignore`).
 
 ---
 
-## 7. Next Steps
+## 8. Run Condition Variants
+
+The basic manual run uses the neutral `instructions.txt` template. For more
+controlled experiments, use Run Condition Declarations and reusable prompts:
+
+- **[Run Condition Declaration](run-condition-declaration.md)** — define
+  workspace boundary, source relation, tool mode, output posture, platform,
+  and continuation policy before each run. Includes a YAML template.
+
+- **[No-Executable Source-as-Soil Prompt](prompts/no-executable-source-as-soil.md)** —
+  based on Run 006. Forbids executable files; encourages trace/fragment/ghost
+  output. Strongest ghost/self-continuity results so far.
+
+- **[Markdown-Only Source-as-Soil Prompt](prompts/markdown-only-source-as-soil.md)** —
+  based on Run 008. Current best practical prompt. Real directory, real
+  Markdown writes, no executables, reduced coding collapse.
+
+- **[First Eight Run Findings](first-eight-run-findings.md)** — compact
+  comparison of Runs 001–008 with key concepts and emerged attractors.
+
+- **[Platform Fit Summary](platform-fit-summary.md)** — current and future
+  platform assessment (Copilot, Claude Code, Crush, custom harness).
+
+---
+
+## 9. Next Steps
 
 After one or more manual runs, consider:
 
 - Comparing runs to observe how the source/library conditions exploration.
+- Using a Run Condition Declaration to make variables explicit.
 - Moving to `feature/agent-prompt-runner` for automated agent execution.
 - Adding `feature/watcher-trigger` for automatic runs on library changes.

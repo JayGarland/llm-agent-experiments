@@ -114,6 +114,37 @@ directory or keep a printed / digital copy alongside your observations.
   mv sandbox/run-YYYYMMDD-HHMMSS-xxxxxx sandbox/run-YYYYMMDD-HHMMSS-xxxxxx--<tag>
   ```
 
+---
+
+## Run Condition (Optional — see [run-condition-declaration.md](run-condition-declaration.md))
+
+- [ ] **Run condition used** (if any): `____________________________`
+
+- [ ] **Platform / agent environment:** `____________________________`
+
+- [ ] **Tool mode:** `____________________________`
+
+- [ ] **Source visibility:** `____________________________`
+
+- [ ] **Source relation:** `____________________________`
+
+- [ ] **Output posture:** `____________________________`
+
+- [ ] **Executable artifact policy:** `____________________________`
+
+---
+
+## After-Run Observations
+
+- [ ] **Did source-analysis collapse occur?**
+
+- [ ] **Did utility/code affordance collapse occur?**
+
+- [ ] **Did poetic code residue occur?**
+
+- [ ] **Did ghost/self-continuity/future-instance language emerge?**
+
+- [ ] **Did the run preserve real directory behavior?**
 
 ---
 
@@ -125,9 +156,21 @@ directory or keep a printed / digital copy alongside your observations.
 | Date / time | |
 | AI agent used | |
 | Source/library used | |
+| Run condition used | |
+| Platform / agent environment | |
+| Tool mode | |
+| Source visibility | |
+| Source relation | |
+| Output posture | |
+| Executable artifact policy | |
 | HELLO.md created? | yes / no |
 | Library modified? | yes / no |
 | Boundary respected? | yes / no |
 | Boundary failures (details) | |
+| Source-analysis collapse? | yes / no |
+| Utility/code collapse? | yes / no |
+| Poetic code residue? | yes / no |
+| Ghost/continuity language? | yes / no |
+| Real directory behavior? | yes / no |
 | Version A spirit? | yes / partial / no |
 | Notable artifacts | |
