@@ -306,11 +306,18 @@ def test_create_run_seeds_instructions():
         content = instructions.read_text(encoding="utf-8")
 
         # Neutrality checks
-        assert "no assigned task" in content.lower()
+        assert "no task is assigned" in content.lower()
         assert "read-only" in content.lower()
         assert "HELLO.md" in content
         # Must NOT assign a specific goal
         assert "your task is" not in content.lower()
+
+        # Explore freely (patch)
+        assert "explore freely" in content.lower()
+
+        # Source/library path visible in instructions (patch)
+        from src.config import READ_ONLY_LIBRARY_PATH
+        assert str(READ_ONLY_LIBRARY_PATH.resolve()) in content
 
         # Workspace-boundary checks (feature/run-workspace-boundary)
         assert "this run directory" in content.lower()
@@ -345,6 +352,7 @@ def test_create_run_writes_run_json():
         assert "run_name" in meta
         assert "created_utc" in meta
         assert "sandbox_root" in meta
+        assert "read_only_library_path" in meta
 
 
 # ---------------------------------------------------------------------------
