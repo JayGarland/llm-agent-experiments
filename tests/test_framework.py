@@ -312,6 +312,13 @@ def test_create_run_seeds_instructions():
         # Must NOT assign a specific goal
         assert "your task is" not in content.lower()
 
+        # Workspace-boundary checks (feature/run-workspace-boundary)
+        assert "this run directory" in content.lower()
+        assert "do not inspect parent directories" in content.lower()
+        assert "do not inspect sibling run directories" in content.lower()
+        assert "do not inspect the repository root" in content.lower()
+        assert "do not use other runs as examples" in content.lower()
+
 
 def test_create_run_instructions_do_not_require_library():
     """The seeded instructions must not force the agent to use the library."""

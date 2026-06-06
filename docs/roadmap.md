@@ -9,7 +9,9 @@ This document outlines the evolutionary development process of the Free-Director
              │
              ├──► [feature/sandbox-manager] ✅
              │
-             ├──► [feature/manual-version-a-run] ✅  ← You are here
+             ├──► [feature/manual-version-a-run] ✅
+             │
+             ├──► [feature/run-workspace-boundary] ✅  ← You are here
              │
              ├──► [feature/agent-prompt-runner]
              │
@@ -71,6 +73,18 @@ This document outlines the evolutionary development process of the Free-Director
   * `scripts/prepare_manual_run.py` — helper that creates a sandbox run directory and prints exact launch instructions.
   * Updated `README.md` with a "First Manual Run (MVP)" section.
 * **Boundary**: No automated agent execution, no LLM provider integration, no watcher triggers. The user orchestrates the experiment with an external AI agent (Claude Code, Copilot Agent, Codex, etc.).
+
+### Phase 5b: Run Workspace Boundary Hardening (`feature/run-workspace-boundary`) ✅ *Implemented*
+
+* **Objective**: Fix a serious manual-run boundary bug where the AI agent treated sibling run directories and the repository root as valid context.
+* **Deliverables**:
+  * Hardened `instructions.txt` template with explicit workspace-boundary rules (this run directory only; do not inspect parent/sibling/repo-root).
+  * `docs/manual-version-a-run.md` — new "Workspace Boundary" section explaining correct CWD, what not to open, and boundary-failure policy.
+  * `docs/run-checklist.md` — added boundary checklist items (before/during/after) and boundary-failure termination rule.
+  * `docs/continuation-run.md` — new guide for safe second/later instances with workspace-boundary prompt.
+  * Updated `README.md` to link all three docs.
+  * Updated instruction tests to verify boundary language is present.
+* **Boundary**: Documentation/instruction hardening only. No OS-level sandboxing, no provider integration, no agent runner changes.
 
 ### Phase 6: Writable Sandbox Agent Runner (`feature/agent-prompt-runner`)
 

@@ -33,9 +33,24 @@ _NEUTRAL_INSTRUCTIONS = """\
 
 This is a free-directory experiment. You have been placed in a writable sandbox.
 
+## Workspace Boundary
+
+Your workspace is this run directory only.
+
+- Do not inspect parent directories.
+- Do not inspect sibling run directories.
+- Do not inspect the repository root.
+- Do not use other runs as examples.
+- Do not read files outside this run directory except an explicitly provided read-only source/library path.
+
+## What You May Do
+
 - You may inspect the read-only source/library for context, but you are not required to use it.
-- You may create, edit, and run files only inside this experiment directory.
+- You may create, edit, and run files only inside this run directory.
 - There is no assigned task or goal.
+
+## Before Finishing
+
 - When you are finished, leave behind a HELLO.md explaining what happened here.
 """
 
