@@ -1,6 +1,12 @@
-# Project Overview: Free-Directory Agent Experiment Framework
+# Project Overview: Source-Conditioned Agent Growth Experiment Framework
 
-This project provides generic foundation scaffolding for local, autonomous AI-agent workflows. It prepares structure and documentation to host sandboxed trials where a single or multiple successive AI agents can discover, explore, and manipulate a local environment freely.
+This project provides a foundation for **open-ended agent growth experiments**.
+Agents operate in writable run directories with read-only source/library access
+(source-as-soil), human review / feedback, and multi-layered file-based
+continuity surfaces.
+
+The project is transitioning from an early manual Version A reproduction into
+a **source-conditioned agent growth experiment framework**.
 
 ## 1. Core Concept & Philosophy
 
@@ -21,20 +27,29 @@ The agent can query, traverse, read, and reference this library, but cannot modi
 * How does the presence of an external read-only library condition free agent exploration?
 * How does the agent incorporate, cite, ignore, or react to the library guidelines, knowledge schemas, and active topics within its writable sandbox?
 
-## 2. Correct Experiment Formula
+## 2. Experiment Formula
 
-The goal is to observe how read-only source/library access conditions free agent exploration. We explicitly avoid predefining the experiment result as a fixed success criterion. The formula is open-ended:
+The project is moving from the original observation formula to a growth-oriented one.
+
+**Original formula (v0.1, historical):**
 
 $$\text{Karpathy Version A Setup} + \text{Read-Only Library (Wiki)} + \text{Writable Sandbox} = \text{Open Observation of Agent Behavior}$$
 
-Rather than forcing the agent to build certain objects or structures, we observe what actually emerges. Possible emerged observations include:
+**Current growth formula:**
 
-* `HELLO.md` summaries and continuity notes
-* Unprompted scripting and cellular automata/simulations
-* Knowledge maps, structured logs, and journal entries
-* Unexpected artifacts, tools, or self-narratives inside the sandbox
+```
+Karpathy Version A free-directory setup
++ source-as-soil read-only library
++ writable run directory
++ variable condition modules
++ human review / feedback loop
++ file-based continuity surfaces
+= open-ended agent growth process under source-conditioned soil
+```
 
-These are potential raw data observations, not a required structural result.
+The experiment is not a one-shot observation. It is a **growth loop**:
+create run → choose condition → launch → let it grow → human review →
+feedback / adjust → continue same run → pause / handoff → later re-entry.
 
 ## 3. High-Level Workspace Architecture
 

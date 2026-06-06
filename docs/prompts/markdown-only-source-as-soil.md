@@ -1,8 +1,13 @@
 # Markdown-Only Source-as-Soil Prompt
 
-**Current best practical prompt.** Based on Run 008 — the strongest balance of
-real directory behavior, reduced coding collapse, and ghost/self-continuity
-exploration.
+> **Status: Historical early source-as-soil / trace-oriented prompt.**
+> Based on Run 008 — the best of the early trace-oriented runs. Not the
+> final growth prompt architecture. Retained for reference and comparison.
+
+**Historical best practical prompt from the early trace-oriented phase**
+(especially around Run 008) — the strongest balance of real directory
+behavior, reduced coding collapse, and ghost/self-continuity exploration
+achieved during the early manual-run period.
 
 Give this prompt to the AI agent after opening it in the current run directory.
 

@@ -1,19 +1,23 @@
-# Local Free-Directory Agent Experiment Framework
+# Source-Conditioned Agent Growth Experiment Framework
 
-A generic foundation scaffolding inspired by Andrej Karpathy's "free-directory" AI agent experiment ("Version A"), augmented with a read-only local reference sub LLM-Wiki.
+A **growth experiment framework** inspired by Andrej Karpathy's "Version A"
+free-directory agent experiment. Agents operate in writable run directories
+with read-only source/library access, human review, and multi-layered
+file-based continuity — observed as an open-ended growth process.
 
-This repository establishes a generic, clean **base (foundation) branch** from which developers and researchers can derive downstream feature branches and individual runs.
+This repository provides the **base foundation** from which growth experiments
+are derived, reviewed, continued, and branched.
 
 ---
 
-## 1. Core Architectural Concept
+## 1. Core Experiment Formula
 
-The goal is to observe how read-only source/library access conditions free agent exploration.
+$$\text{Karpathy Version A free-directory setup} + \text{Source-as-Soil Read-Only Library} + \text{Writable Run Directory} + \text{Human Review / Feedback} = \text{Open-Ended Agent Growth Under Source-Conditioned Soil}$$
 
-$$\text{Karpathy Version A free-directory setup} + \text{Read-Only sub LLM-Wiki} + \text{Writable Sandbox} \implies \text{Open observation of how source/library conditions free agent exploration}$$
-
-* **Writable Sandbox (`sandbox/`):** A playground where individual executor runs (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`) can be instantiated. The agent is granted advisory capability to read, write, edit, and run scripts inside this zone. It may leave behind a `HELLO.md` or other unstructured artifacts to communicate its trajectory to future runs.
-* **Read-Only Library Source (`library_sample/`):** A structure simulating a local sub LLM-Wiki (carrying context directories like `notes/` and files like `current_state.md`). In future feature branches, the agent will have safe, read-only search and file-retrieval helpers to discover instructions and references without the capacity to mutate documents. Present boundaries in the base branch are advisory/interface-level only; OS-level containment is deferred to future work.
+The source/library is **soil** — background nutrition, memory, atmosphere.
+The agent is not asked to summarize, analyze, or update it. The run directory
+is where the agent grows over time, across human review cycles, with files
+as a practical continuity surface.
 
 ---
 
@@ -96,34 +100,44 @@ For branch derivations rules, consult [docs/roadmap.md](docs/roadmap.md).
 
 ---
 
-## 5. First Manual Run (MVP)
+## 5. Growth Experiment Flow
 
-You can run a **manual Karpathy Version A experiment** right now using any
-external AI agent (Claude Code, GitHub Copilot Agent, Codex, Cursor, etc.):
+The experiment is **not** a one-shot run. It is a growth loop:
 
-```powershell
-# 1. Prepare a sandbox run directory
-python scripts/prepare_manual_run.py
-
-# 2. Open your AI agent in the printed run directory
-cd sandbox/run-*
-
-# 3. Give the agent this instruction:
-#    "Read instructions.txt and execute the experiment."
+```
+create run → choose source/library → choose condition posture
+→ launch agent → let it grow → human review
+→ feedback / source update / condition adjustment → continue same run
+→ pause / handoff → later re-entry
 ```
 
-Full step-by-step guidance: **[docs/manual-version-a-run.md](docs/manual-version-a-run.md)**
+**Quick start** (baseline / control run):
 
-Before/during/after checklist: **[docs/run-checklist.md](docs/run-checklist.md)**
+```powershell
+python scripts/prepare_manual_run.py --library-path "F:\Path\To\ExternalSubLLMWiki"
+cd sandbox/run-*
+# Open your AI agent, then give it the instructions from instructions.txt
+```
 
-Safe continuation runs (second/later instances): **[docs/continuation-run.md](docs/continuation-run.md)**
+Full guidance: **[docs/manuals/user-manual.en.md](docs/manuals/user-manual.en.md)**
 
-This is the first usable MVP — no automated agent execution, no LLM provider
-integration. The agent runs externally and you observe the results.
+Growth-oriented personal manual: **[docs/manuals/jie-personal-manual.zh.md](docs/manuals/jie-personal-manual.zh.md)**
+
+Checklist: **[docs/run-checklist.md](docs/run-checklist.md)**
+
+Continuity model: **[docs/continuation-run.md](docs/continuation-run.md)**
+
+> **Note on prompts:** The early prompt `"Read instructions.txt and execute
+> the experiment."` (Prompt 1) is retained as a **baseline / control** launch
+> only. It is not the recommended growth prompt — it tends to cause
+> source-analysis collapse. The source-as-soil Markdown-only prompts in
+> `docs/prompts/` are **historical early trace-oriented prompts**, not the
+> final growth prompt architecture. Future prompt design moves toward
+> modular **condition modules**.
 
 ---
 
-## 6. Run Condition Modes
+## 6. Run Condition Modes & Future Modules
 
 Control experimental variables before each run:
 
@@ -132,11 +146,15 @@ Control experimental variables before each run:
   and continuation policy. Includes a reusable YAML template.
 
 - **[Markdown-Only Source-as-Soil Prompt](docs/prompts/markdown-only-source-as-soil.md)** —
-  current best practical prompt (Run 008). Real directory, real Markdown writes,
-  no executables, reduced coding collapse.
+  historical early trace-oriented prompt (Run 008). Not the final growth prompt.
 
 - **[Platform Fit Summary](docs/platform-fit-summary.md)** — current and future
-  platform assessment (Copilot, Claude Code, Crush, custom harness).
+  platform assessment.
 
 - **[First Eight Run Findings](docs/first-eight-run-findings.md)** — empirical
-  comparison of Runs 001–008 with key concepts and emerged attractors.
+  comparison of Runs 001–008.
+
+**Future direction:** Prompt architecture is moving toward **modular condition
+modules** (workspace boundary, source binding, tool mode, executable policy,
+voice, temporal mode, human feedback mode, continuation mode). See
+[docs/roadmap.md](docs/roadmap.md) for `feature/prompt-module-registry`.

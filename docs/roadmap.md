@@ -1,26 +1,29 @@
 # Technical Roadmap & Deferred Work
 
-This document outlines the evolutionary development process of the Free-Directory Agent Experiment Framework. As specified by our design principles, we implement incrementally, creating clean, task-specific feature branches off the [base](/) (foundation) branch.
+This document outlines the evolutionary development of the Source-Conditioned
+Agent Growth Experiment Framework. Development proceeds incrementally through
+clean, task-specific feature branches derived from `base`.
+
+## Current Branch Map
 
 ```text
-       [base branch] (Scaffolding, Documentation & Concepts)
+       [base branch] (Foundation — v0.1 base-manual published)
              │
              ├──► [feature/read-only-library-access] ✅
-             │
              ├──► [feature/sandbox-manager] ✅
+             ├──► [feature/run-workspace-boundary] ✅
+             ├──► [feature/run-condition-declaration] ✅
+             ├──► [feature/per-run-library-path] ✅
              │
-             ├──► [feature/manual-version-a-run] ✅
+             ├──► [docs/growth-framework-reset] ← You are here
              │
-             ├──► [feature/run-workspace-boundary] ✅  ← You are here
+             ├──► [feature/run-growth-packet]
+             ├──► [feature/prompt-module-registry]
+             ├──► [feature/review-and-continue-loop]
+             ├──► [feature/continuity-v2]
+             ├──► [feature/condition-observation-registry]
              │
-             ├──► [feature/agent-prompt-runner]
-             │
-             ├──► [feature/config-and-path-management]
-             │
-             └──► [feature/watcher-trigger]
-                    │
-                    ▼
-           [Future Integration Branches] (Security Sandbox, Evaluation & Analysis)
+             └──► [experiment/branching-growth-search]
 ```
 
 ---
@@ -86,26 +89,62 @@ This document outlines the evolutionary development process of the Free-Director
   * Updated instruction tests to verify boundary language is present.
 * **Boundary**: Documentation/instruction hardening only. No OS-level sandboxing, no provider integration, no agent runner changes.
 
-### Phase 6: Writable Sandbox Agent Runner (`feature/agent-prompt-runner`)
+### Phase 6: Growth Framework Reset (`docs/growth-framework-reset`) 🔄 *In Progress*
 
-* **Objective**: Build execution controllers using non-coercive neutral prompts to direct how the model is called and how its outputs are collected.
+* **Objective**: Reframe project identity from one-shot manual Version A reproduction to source-conditioned agent growth experiment framework.
 * **Deliverables**:
-  * Real implementation of `AgentRunner` within `src/agent.py`.
-  * Setting up the system prompt to guide free directory exploration without library uptake pressure.
-  * Integration stubs waiting for actual LLM API invocation or streaming.
+  * Updated project identity across README, overview, roadmap.
+  * Prompt 1 retired from recommended workflow (retained as baseline/control).
+  * Prompts 2/3 reclassified as historical early trace-oriented prompts.
+  * Old continuation prompt marked historical; three-layer continuity model introduced.
+  * Growth loop with human review / feedback documented.
+  * Condition modules introduced as formal future direction.
+* **Boundary**: Documentation/prompt-design only. No runtime code changed.
+
+### Phase 7: Run Growth Packet (`feature/run-growth-packet`)
+
+* **Objective**: Define the file and metadata structure for a growth-oriented run (supersedes the minimal `instructions.txt` + `run.json` seed).
+* **Deliverables**: `GROWTH_LOG.md`, `CONDITION.md`, operator notes surface, run growth state file format.
+* **Boundary**: File format and seeding logic only. No agent execution.
+
+### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`)
+
+* **Objective**: Implement a modular prompt construction system from condition variables.
+* **Initial modules**: workspace boundary, source binding, source status, source relation, tool mode, executable policy, voice/person, temporal mode, human feedback mode, continuation mode.
+* **Boundary**: Prompt construction only. No agent runner, no provider integration.
+
+### Phase 9: Review-and-Continue Loop (`feature/review-and-continue-loop`)
+
+* **Objective**: Add human review checkpoint and feedback injection into the growth loop. Support pausing a run, reviewing artifacts, providing feedback, and continuing the same run.
+* **Boundary**: Loop mechanics and file surface. No watcher, no automation.
+
+### Phase 10: Continuity v2 (`feature/continuity-v2`)
+
+* **Objective**: Implement the three-layer continuity model (in-run, file-based, later-instance) with explicit surface files and re-entry protocol.
+* **Boundary**: Continuity mechanics. No automatic execution.
+
+### Phase 11: Condition Observation Registry (`feature/condition-observation-registry`)
+
+* **Objective**: Lightweight structured observation log for comparing runs under different condition modules.
+* **Boundary**: Observation format and comparison. No automatic scoring, no evaluation framework.
+
+### Phase 12: Branching Growth Search (`experiment/branching-growth-search`)
+
+* **Objective**: Explore whether agents under different source conditions produce divergent growth trajectories worth comparing as a search process.
+* **Boundary**: Experimental. No production automation.
 
 ---
 
-## Part 2: Intentionally Deferred Features
+## Intentionally Deferred
 
-The following features are **fully out-of-scope** for the base branch and will be handled exclusively in downstream feature/experiment branches.
+The following are **not removed** — they are intentionally deferred until the
+growth packet, prompt module registry, review-and-continue loop, and continuity-v2
+are stable. They remain valid long-term directions:
 
-1. **Watcher Automation & Triggers (`feature/watcher-trigger`)**:
-   * Tracking file modifications in the local sub LLM-Wiki via a file watch daemon (using `watchdog`).
-   * Automatically triggering a fresh agent sandbox execution run on wiki changes.
-2. **Real LLM Integration**:
-   * Incorporating calling code, API clients (OpenAI, Anthropic, Gemini, etc.), key management, rate-limiting, and error-recovery.
-3. **OS-Level Containment Barriers (`feature/security-sandbox`)**:
-   * Production-level system security container locks (e.g., Docker containers, Linux namespaces, or chroot environments) to guarantee the agent cannot perform file modification outside of the `sandbox/` directory.
-4. **Evaluation / Quantitative Analysis (`feature/evaluation-analysis`)**:
-   * Assessment frameworks, summarization routines, or structured analyses of sandbox artifacts across multiple chronological runs to observe how the library conditions the agents' exploration.
+- **Watcher / trigger automation** — automatic run creation on source/library changes.
+- **Agent runner** — automated agent execution (currently manual via external agents).
+- **Provider integration** — LLM API clients, key management, rate-limiting.
+- **OS-level sandboxing** — Docker, chroot, read-only mounts for hard enforcement.
+- **Automatic evaluation / scoring** — quantitative frameworks for run comparison.
+
+These are revisited after Phase 12.
