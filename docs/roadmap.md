@@ -38,12 +38,16 @@ This document outlines the evolutionary development process of the Free-Director
   * Real loading of `src/config.py` environment variables.
   * Helper scripts to automatically setup virtual environments (`venv`) and install local packages.
 
-### Phase 3: Safe Read-Only Library Access Utility (`feature/library-reader`)
+### Phase 3: Safe Read-Only Library Access Utility (`feature/read-only-library-access`) ✅ *Implemented*
 
 * **Objective**: Provide working code helpers to allow safe discovery and retrieval of files from the local sub LLM-Wiki.
 * **Deliverables**:
-  * Safe methods `list_library_files()` and `read_library_file(relative_path)` in `src/library.py`.
-  * Strict path resolution containment validation using `Path.is_relative_to()`.
+  * `LibraryReader` class in `src/library.py` accepting a configured library root path.
+  * `list_files()` returning relative paths and `read_file(relative_path)` returning text content.
+  * Strict path resolution containment using `Path.is_relative_to()` to reject breakouts.
+  * Module-level convenience functions `list_library_files()` and `read_library_file()`.
+  * Focused unit tests covering: valid reads, breakout rejection, absolute-path rejection, missing-file handling, and no-write-API verification.
+* **Boundary**: This branch implements only the read-only source/library access layer. Sandbox writing, agent execution, watcher triggers, provider integration, and metadata logging belong to later branches.
 
 ### Phase 4: Sandbox Creation Utilities & Logging (`feature/sandbox-manager`)
 
