@@ -19,8 +19,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/run-growth-packet] ✅
              │
-             ├──► [feature/prompt-module-registry] ← You are here
-             ├──► [feature/review-and-continue-loop]
+             ├──► [feature/prompt-module-registry] ✅
+             │
+             ├──► [feature/review-and-continue-loop] ← You are here
              ├──► [feature/continuity-v2]
              ├──► [feature/condition-observation-registry]
              │
@@ -115,20 +116,29 @@ clean, task-specific feature branches derived from `base`.
   * 8 new tests covering growth packet seeding, metadata, instructions, and content verification (36 total).
 * **Boundary**: File seeding and instructions updates only. No watcher, runner, provider integration, or automation.
 
-### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`) 🔄 *In Progress*
+### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`) ✅ *Implemented*
 
 * **Objective**: Create a documentation-first prompt module registry with composable condition modules for source-conditioned agent growth. No automatic prompt generation yet.
 * **Deliverables**:
-  * `docs/prompt-modules/prompt-module-registry.md` — 11 module families with 30+ individual modules (workspace boundary, source binding, source status, source relation, tool mode, executable artifact policy, voice/person, temporal mode, output posture, human feedback mode, continuation mode). Each module includes purpose, use-when, prompt fragment, and risk/failure mode.
-  * `docs/prompt-modules/prompt-composition-guide.md` — How to assemble growth prompts manually from modules. Includes 3 complete example prompts: Minimal Growth Start, Source-as-Soil Markdown Growth, Same-Run Continue After Human Feedback.
-  * `docs/prompt-modules/condition-set-template.md` — Human-facing template for recording selected modules, assembled prompt, and post-run notes per experiment.
-  * Updated roadmap and README with references to prompt module docs.
-* **Boundary**: Documentation and prompt-design only. No automatic prompt generator, no prompt execution engine, no agent runner, no provider integration. This phase prepares the design surface for future prompt assembly.
+  * `docs/prompt-modules/prompt-module-registry.md` — 11 module families with 38 individual modules. Each module includes purpose, use-when, prompt fragment, and risk/failure mode.
+  * `docs/prompt-modules/prompt-composition-guide.md` — Manual assembly guide with 3 complete example prompts: Minimal Growth Start, Source-as-Soil Markdown Growth, Same-Run Continue After Human Feedback.
+  * `docs/prompt-modules/condition-set-template.md` — Human-facing template for per-run condition recording and post-run notes.
+  * Updated roadmap, README, and overview with references to prompt module docs.
+* **Boundary**: Documentation and prompt-design only. No automatic prompt generator, no agent runner, no provider integration.
 
-### Phase 9: Review-and-Continue Loop (`feature/review-and-continue-loop`)
+### Phase 9: Review-and-Continue Loop (`feature/review-and-continue-loop`) 🔄 *In Progress*
 
-* **Objective**: Add human review checkpoint and feedback injection into the growth loop. Support pausing a run, reviewing artifacts, providing feedback, and continuing the same run.
-* **Boundary**: Loop mechanics and file surface. No watcher, no automation.
+* **Objective**: Make the human review → feedback → same-run continuation loop operationally clear inside each run directory with a dedicated seeded file, updated templates, and multi-cycle operator review support.
+* **Deliverables**:
+  * `REVIEW_LOOP.md` — New seeded file defining the manual loop: Grow → Review → Record → Decide (Continue/Pause/Stop/Branch) → Inject Feedback → Continue Same Run → Preserve Traces. Includes decision table and key file references.
+  * Updated `OPERATOR_REVIEW.md` — Multi-cycle support with Review Cycle 1/2 starters, Boundary Check, Attractor Check, and Continue/Pause/Stop/Branch decision.
+  * Updated `FEEDBACK_PROMPT.md` — Added Template C (Correct Drift) for source-analysis, coding utility, or boundary confusion correction.
+  * Updated `instructions.txt` — References REVIEW_LOOP.md and the manual review / feedback / continue cycle.
+  * Updated `GROWTH_PACKET.md` — References REVIEW_LOOP.md in growth loop and continuity surfaces.
+  * Updated `CONTINUITY_NOTES.md` — Treats human review and REVIEW_LOOP.md as part of file-based continuity.
+  * Updated `run.json` — REVIEW_LOOP.md added to `growth_packet_files`.
+  * 8 new tests (44 total) covering review loop seeding, metadata, templates, and continuity references.
+* **Boundary**: Manual loop mechanics and file surface only. No automation, no agent runner, no autonomous loops. The operator controls the loop.
 
 ### Phase 10: Continuity v2 (`feature/continuity-v2`)
 

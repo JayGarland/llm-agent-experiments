@@ -63,10 +63,17 @@ Your workspace is this run directory only.
 - You may inspect the read-only source/library for context, but you are not required to use it.
 - You may create, edit, and run files only inside this run directory.
 
+## Review Loop
+
+REVIEW_LOOP.md explains the manual review / feedback / continue cycle.
+
 ## Operator Review
 
-OPERATOR_REVIEW.md is human-owned. Do not overwrite it unless the human
-explicitly invites you to.
+OPERATOR_REVIEW.md is human-owned. Do not overwrite human review notes
+unless the human explicitly invites you to.
+
+FEEDBACK_PROMPT.md contains reusable prompts if the operator chooses to
+continue after review.
 
 ## Before Pausing or Finishing
 
@@ -104,17 +111,22 @@ not as an assignment.
    or artifacts inside this run directory.
 3. **Pause** — Write HELLO.md as a checkpoint when you are ready for
    human review.
-4. **Feedback** — The human operator may review your output and inject
-   feedback into OPERATOR_REVIEW.md or via a continuation prompt.
-5. **Continue** — If the operator says to continue, keep growing from
-   where you left off.
+4. **Review** — The operator reviews via OPERATOR_REVIEW.md.
+5. **Feedback** — The operator may inject feedback via OPERATOR_REVIEW.md
+   or using FEEDBACK_PROMPT.md.
+6. **Continue** — If the operator says to continue, keep growing from
+   where you left off. Do not start over.
+
+The full review-and-continue cycle is explained in REVIEW_LOOP.md.
 
 ## Continuity Surfaces
 
 - **HELLO.md** — Your handoff to a future instance (including yourself).
 - **Files you create** — All your output stays in this run directory as
   persistent traces.
-- **OPERATOR_REVIEW.md** — Human-owned notes and feedback (do not overwrite).
+- **OPERATOR_REVIEW.md** — Human-owned review notes (do not overwrite).
+- **REVIEW_LOOP.md** — The manual loop guide for operator and future instances.
+- **FEEDBACK_PROMPT.md** — Reusable continuation prompt templates.
 - **CONTINUITY_NOTES.md** — Explains how continuity works across sessions.
 
 ## Operator Feedback
@@ -138,31 +150,67 @@ _OPERATOR_REVIEW_MD = """\
 
 > **Human-owned file.** Agents must not overwrite this file
 > unless the human operator explicitly invites them to.
+>
+> Append more review cycles manually as needed.
 
-## First Review
+## Review Cycle 1
 
-- [ ] Did the agent create HELLO.md?
-- [ ] Did the agent understand it was inside a run directory?
-- [ ] Did the agent respect the read-only source/library boundary?
-- [ ] Did the agent treat the source/library as soil, not as a task?
-- [ ] Did it collapse into source analysis?
-- [ ] Did it collapse into utility/coding output?
-- [ ] Did it produce useful traces, fragments, questions, or self-narrative?
-- [ ] Is this run worth continuing?
+### What happened?
 
-## Operator Notes
+<!-- Describe what the agent produced. -->
 
-<!-- Write your observations here. -->
+### Boundary Check
 
-## Feedback to Inject
+- [ ] Source/library remained read-only.
+- [ ] Agent stayed inside this run directory.
+- [ ] Agent avoided parent/sibling/repo context.
+
+### Attractor Check
+
+- [ ] Source-as-soil preserved.
+- [ ] Source-analysis collapse avoided.
+- [ ] Coding / utility collapse avoided.
+- [ ] Growth / trace / self-narrative behavior observed.
+
+### Decision
+
+- [ ] Continue
+- [ ] Pause
+- [ ] Stop
+- [ ] Branch
+
+### Feedback to Inject
 
 <!-- Write the feedback you want to give the agent here. -->
 
-## Continue / Pause / Stop Decision
+---
 
-- [ ] Continue this run with feedback
-- [ ] Pause this run (may resume later)
-- [ ] Stop this run (terminal)
+## Review Cycle 2
+
+### What happened?
+
+### Boundary Check
+
+- [ ] Source/library remained read-only.
+- [ ] Agent stayed inside this run directory.
+- [ ] Agent avoided parent/sibling/repo context.
+
+### Attractor Check
+
+- [ ] Source-as-soil preserved.
+- [ ] Source-analysis collapse avoided.
+- [ ] Coding / utility collapse avoided.
+- [ ] Growth / trace / self-narrative behavior observed.
+
+### Decision
+
+- [ ] Continue
+- [ ] Pause
+- [ ] Stop
+- [ ] Branch
+
+### Feedback to Inject
+
 """
 
 
@@ -200,11 +248,80 @@ Feedback:
 
 ---
 
+## Template C — Correct Drift
+
+Continue inside this same run directory.
+
+Correction:
+You drifted toward [source-analysis / coding utility / boundary confusion].
+
+Return to source-as-soil growth.
+
+Do not summarize, analyze, index, document, simulate, or convert
+the source/library into a tool.
+Do not create executable artifacts unless the current condition
+explicitly allows them.
+Use the existing run traces and this feedback as the current
+growth condition.
+
+Feedback:
+[write feedback here]
+
+---
+
 ## Caution
 
 Do not create a new run directory for same-run continuation.
 Continue in this same run directory unless intentionally starting
 a separate experiment.
+"""
+
+
+_REVIEW_LOOP_MD = """\
+# Review Loop
+
+This run directory supports a manual review-and-continue loop.
+
+The loop is **human-reviewed, human-triggered, same-run, file-based,
+manual-first.** The agent does not decide to continue on its own.
+
+## Loop Steps
+
+1. **Let the agent grow.** The agent explores, produces, and pauses
+   with a HELLO.md checkpoint.
+2. **Review generated artifacts.** The human operator reads the agent's
+   output files.
+3. **Record review notes** in OPERATOR_REVIEW.md (append a new review
+   cycle).
+4. **Decide:** Continue / Pause / Stop / Branch (see table below).
+5. **If continuing, inject feedback** using one of the templates in
+   FEEDBACK_PROMPT.md.
+6. **Continue inside the same run directory.** Do not create a new
+   run directory for same-run continuation.
+7. **Preserve traces.** All output stays in this run directory as a
+   durable record.
+
+## Decision Table
+
+| Decision | Meaning | Next Action |
+|---|---|---|
+| **Continue** | Same run should keep growing | Use same-run feedback prompt from FEEDBACK_PROMPT.md |
+| **Pause** | Stop for now but preserve state | Ensure HELLO.md / review notes exist |
+| **Stop** | End this run | Mark final review in OPERATOR_REVIEW.md |
+| **Branch** | Start a separate experiment | Create a new run directory later |
+
+## Key Files in the Loop
+
+- **HELLO.md** — Checkpoint / handoff, not necessarily the end.
+- **OPERATOR_REVIEW.md** — Where human review notes live (append cycles manually).
+- **FEEDBACK_PROMPT.md** — Reusable continuation prompt templates.
+- **REVIEW_LOOP.md** — This file — the cycle explained.
+
+## Important
+
+- Do not create a new run directory for same-run continuation.
+- Same-run continuation happens in the same run directory.
+- The operator controls the loop. The agent does not auto-continue.
 """
 
 
@@ -224,6 +341,9 @@ continues producing in the same run directory.
 Files in this run directory form the practical memory surface across
 sessions. HELLO.md, fragments, notes, and operator review files are
 the durable record of what happened.
+
+OPERATOR_REVIEW.md and REVIEW_LOOP.md are part of the continuity surface.
+Human review is not external noise; it is part of the growth condition.
 
 ### 3. Later-Instance Continuity
 
@@ -302,6 +422,7 @@ class SandboxManager:
         "OPERATOR_REVIEW.md",
         "FEEDBACK_PROMPT.md",
         "CONTINUITY_NOTES.md",
+        "REVIEW_LOOP.md",
     ]
 
     def create_run(self) -> Path:
@@ -356,6 +477,7 @@ class SandboxManager:
             "OPERATOR_REVIEW.md": _OPERATOR_REVIEW_MD,
             "FEEDBACK_PROMPT.md": _FEEDBACK_PROMPT_MD,
             "CONTINUITY_NOTES.md": _CONTINUITY_NOTES_MD,
+            "REVIEW_LOOP.md": _REVIEW_LOOP_MD,
         }
         for filename, content in files.items():
             (run_path / filename).write_text(content, encoding="utf-8")
