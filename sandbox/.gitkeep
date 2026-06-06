@@ -1,0 +1,2 @@
+# Placeholder to keep the sandbox folder in version control.
+# Actual experimental runs will create subdirectories (e.g., sandbox/run-YYYYMMDD-HHMMSS) here, which are ignored by .gitignore.
