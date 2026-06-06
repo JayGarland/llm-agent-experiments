@@ -33,6 +33,7 @@ Do not use all modules at once. Start minimal and add modules deliberately.
 | 9 | Output Posture | `growth-oriented` |
 | 10 | Human Feedback Mode | `silent-observer` |
 | 11 | Continuation Mode | `new-run-branch` |
+| 12 | Apparatus Visibility | `framework-visible` |
 
 Omitted families use their defaults silently. Explicit selection is always preferred.
 
@@ -712,7 +713,109 @@ instance can re-enter without confusion.
 
 ---
 
-## 15. Example Condition Sets
+## 15. Apparatus Visibility Modules
+
+How much of the experiment apparatus the agent can perceive.
+
+### Module: `framework-visible`
+
+**Purpose:** The agent can see and interpret the experiment apparatus —
+instructions, growth packet, review loop, continuity notes, metadata,
+permission boundaries. A0 level.
+
+**Use when:** Meta-reflective research. You want to observe how the agent
+interprets its own experimental conditions.
+
+**Design condition:** All apparatus files are inside the agent-visible workspace.
+No structural hiding.
+
+**Risk:** The agent may treat the apparatus as soil and drift into framework-meta
+reflection — output *about* the experiment rather than from within the world fragment.
+
+**Status:** Valid contrast condition, not preferred default.
+
+### Module: `apparatus-visible-but-not-soil`
+
+**Purpose:** The agent can see apparatus files but the prompt tells it not to
+grow from them. A1 level — soft framework opacity.
+
+**Use when:** You want to keep the current run layout but add a corrective
+prompt rule.
+
+**Prompt fragment:**
+
+```
+The framework files (GROWTH_PACKET.md, REVIEW_LOOP.md, run.json, etc.)
+are not soil. Do not treat them as material for growth. They are
+operator-side scaffolding.
+```
+
+**Risk:** Prompt-level opacity cannot fully prevent meta-reflection because
+the apparatus files remain visible and readable. This is a palliative, not
+a structural solution.
+
+**Status:** Minor corrective condition / deferred contrast track.
+
+### Module: `apparatus-minimized`
+
+**Purpose:** The agent-visible surface is minimized. The agent sees a
+world-facing surface (WAKE.md, WORLD.md, HELLO.md) while operator/framework
+files live outside the agent workspace. A2 level.
+
+**Use when:** Preferred next direction — brain-in-vat / phenomenal enclosure.
+The agent should wake inside a world fragment, not read an experiment framework.
+
+**Design condition (not a prompt fragment):**
+
+This module requires workspace/layout changes, not just a prompt rule:
+
+```
+agent_view/
+  WAKE.md
+  WORLD.md
+  HELLO.md
+  TRACE.md
+
+operator/
+  run.json
+  REVIEW_LOOP.md
+  OPERATOR_REVIEW.md
+  FEEDBACK_PROMPT.md
+  CONDITION_SET.md
+```
+
+The agent workspace is `agent_view/`. Operator files are outside it.
+
+**Target phrase:**
+
+```
+You wake inside a world fragment.
+You may write what you perceive.
+```
+
+**Status:** Main next implementation direction (Phase 4D+).
+
+### Module: `harness-mediated-source-projection`
+
+**Purpose:** A harness (future software layer) projects selected source/library
+content into a world-input surface without exposing the source path, framework
+files, or experiment apparatus. A3 level.
+
+**Use when:** Future deep research. Harder phenomenal enclosure — the agent
+perceives a constructed world, not files in a directory.
+
+**Design condition:** Requires a harness that does not yet exist in this project.
+The harness reads the source/library and writes projected content into the
+agent-visible input surface.
+
+**Risk:** This is closer to brain-in-a-vat territory. Pursue deliberately,
+with awareness of the philosophical weight. Not current MVP.
+
+**Status:** Future deep research direction.
+
+---
+
+## 16. Example Condition Sets
 
 ### Set A — Minimal Growth Start (Baseline)
 
@@ -755,7 +858,7 @@ instance can re-enter without confusion.
 
 ---
 
-## 16. What Not to Do
+## 17. What Not to Do
 
 - **Do not use all modules at once.** This is not a checklist. Select deliberately.
 - **Do not mix contradictory modules** without noting the tension as experimental.

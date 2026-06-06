@@ -89,6 +89,13 @@ Mark the module(s) selected in each family. Leave blank to accept the default.
 - [ ] `new-run-branch`
 - [ ] `pause-handoff-checkpoint`
 
+### Apparatus Visibility
+
+- [ ] `framework-visible`
+- [ ] `apparatus-visible-but-not-soil`
+- [ ] `apparatus-minimized`
+- [ ] `harness-mediated-source-projection`
+
 ---
 
 ## Assembled Prompt

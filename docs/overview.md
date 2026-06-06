@@ -68,3 +68,6 @@ For composing experimental prompts from condition modules, see:
 - [Prompt Module Registry](prompt-modules/prompt-module-registry.md)
 - [Prompt Composition Guide](prompt-modules/prompt-composition-guide.md)
 - [Condition Set Template](prompt-modules/condition-set-template.md)
+
+For the apparatus visibility model (how much of the experiment framework the agent can see), see:
+- [Apparatus Visibility Model](design/apparatus-visibility-model.md)

@@ -21,7 +21,14 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/prompt-module-registry] ✅
              │
-             ├──► [feature/review-and-continue-loop] ← You are here
+             ├──► [feature/review-and-continue-loop] ✅
+             │
+             ├──► [docs/apparatus-visibility-model] ← You are here
+             ├──► [feature/apparatus-minimized-layout]
+             ├──► [feature/world-fragment-builder]
+             ├──► [feature/wake-surface]
+             ├──► [experiment/first-a2-comparison-run]
+             │
              ├──► [feature/continuity-v2]
              ├──► [feature/condition-observation-registry]
              │
@@ -139,6 +146,37 @@ clean, task-specific feature branches derived from `base`.
   * Updated `run.json` — REVIEW_LOOP.md added to `growth_packet_files`.
   * 8 new tests (44 total) covering review loop seeding, metadata, templates, and continuity references.
 * **Boundary**: Manual loop mechanics and file surface only. No automation, no agent runner, no autonomous loops. The operator controls the loop.
+
+### Phase 4C: Apparatus Visibility Model (`docs/apparatus-visibility-model`) 🔄 *In Progress*
+
+* **Objective**: Define four apparatus visibility levels (A0–A3) after a real manual run exposed the framework-meta attractor. The agent was interpreting the experiment apparatus itself as growth material.
+* **Deliverables**:
+  * `docs/design/apparatus-visibility-model.md` — Full design doc with A0 (framework-visible), A1 (apparatus-visible-but-not-soil), A2 (apparatus-minimized), A3 (harness-mediated source projection). Brain-in-vat / phenomenal enclosure interpretation. Clear statement that prompt-level opacity cannot fully hide visible apparatus.
+  * Updated `docs/prompt-modules/prompt-module-registry.md` — New Apparatus Visibility family with 4 modules.
+  * Updated `docs/prompt-modules/prompt-composition-guide.md` — Apparatus Visibility and Phenomenal Enclosure section with A2 preview prompt.
+  * Updated `docs/prompt-modules/condition-set-template.md` — Apparatus Visibility checkbox group.
+  * Updated roadmap with Phase 4C–4G path.
+* **Boundary**: Documentation/design alignment only. No runtime behavior changed. A0/A1 retained as contrast conditions. A2 marked as main next MVP path. A3 marked as future deep direction.
+
+### Phase 4D: Apparatus-Minimized Run Layout MVP (`feature/apparatus-minimized-layout`)
+
+* **Objective**: Implement the A2 run layout — separate `agent_view/` from `operator/` directories. Agent sees only world-facing files.
+* **Boundary**: Layout change only. No harness, no source projection.
+
+### Phase 4E: World Fragment Builder MVP (`feature/world-fragment-builder`)
+
+* **Objective**: Build the minimal world surface files (WAKE.md, WORLD.md) that replace instructions.txt as the agent's entry point.
+* **Boundary**: File seeding only. No dynamic content generation.
+
+### Phase 4F: Wake Surface MVP (`feature/wake-surface`)
+
+* **Objective**: Design and seed the WAKE.md surface — the first thing the agent reads in an A2 run.
+* **Boundary**: Content design only. No harness.
+
+### Phase 4G: First A2 Comparison Run (`experiment/first-a2-comparison-run`)
+
+* **Objective**: Run the same source/library through A0 and A2 conditions. Compare output attractors.
+* **Boundary**: Manual experiment. No automated comparison.
 
 ### Phase 10: Continuity v2 (`feature/continuity-v2`)
 

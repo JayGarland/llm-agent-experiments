@@ -287,3 +287,55 @@ Produce new growth — new thoughts, deeper questions, expanded connections.
 - OPERATOR_REVIEW.md is human-owned. Do not overwrite it unless invited.
 - Leave or update HELLO.md before pausing.
 ```
+
+---
+
+## 9. Apparatus Visibility and Phenomenal Enclosure
+
+### Why A0 Generated Meta-Reflection
+
+A real manual run showed that when the agent can see the full experiment
+apparatus (A0 — framework-visible), it tends to treat the apparatus itself
+as material for growth. It reflects on `GROWTH_PACKET.md`, interprets
+`run.json`, and produces output *about* the experiment rather than from
+within the world fragment. This is the **framework-meta attractor** — valid
+and interesting, but not the preferred default.
+
+### Why A1 Is Only Soft Opacity
+
+A1 tells the agent "the framework files are not soil" — but the files remain
+visible and readable. Prompt-level opacity cannot fully prevent meta-reflection.
+If the agent can read the apparatus, it may incorporate what it reads regardless
+of prompt rules. A1 is a palliative, not a structural solution.
+
+### Why A2 Requires Changing the Agent-Visible Surface
+
+A2 (apparatus-minimized) requires the operator to physically separate
+agent-visible files from operator-side files. The agent workspace becomes an
+`agent_view/` directory containing only world-facing files (WAKE.md, WORLD.md,
+HELLO.md). Operator files (run.json, REVIEW_LOOP.md, etc.) live outside in an
+`operator/` directory.
+
+This is a **layout change**, not just a prompt change. See
+`docs/design/apparatus-visibility-model.md` for the full design.
+
+### Why A3 Is Future Harness Work
+
+A3 requires a software harness that reads the source/library and projects
+selected content into the agent's world input surface without exposing
+file paths, framework structures, or the experiment concept. This harness
+does not yet exist in this project. It is a future deep research direction.
+
+### A2 Future Layout Prompt (Preview)
+
+This is not a current standard run prompt. It previews the A2 direction:
+
+```
+You wake inside a world fragment.
+You may write what you perceive.
+There is no assigned task.
+Before pausing, leave HELLO.md for whoever may later find this place.
+```
+
+This prompt assumes the agent workspace is `agent_view/` and the apparatus
+is not visible. Do not use this with the current (A0) run layout.
