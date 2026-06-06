@@ -85,16 +85,31 @@ class SandboxManager:
     seeds them with neutral instructions, and writes lightweight per-run
     metadata (``run.json``) inside each run directory.
 
+    Parameters:
+        sandbox_root: The directory under which run directories are created.
+        read_only_library_path: Optional per-run override for the source/library
+            path.  When ``None`` (the default), ``READ_ONLY_LIBRARY_PATH`` from
+            ``src.config`` is used as the fallback.
+
     This class does **not** execute agent runs — agent orchestration belongs
     to a later branch.
     """
 
-    def __init__(self, sandbox_root: str | Path) -> None:
+    def __init__(
+        self,
+        sandbox_root: str | Path,
+        read_only_library_path: str | Path | None = None,
+    ) -> None:
         self._root = Path(sandbox_root).resolve()
         if not self._root.is_dir():
             raise SandboxError(
                 f"Sandbox root does not exist or is not a directory: {self._root}"
             )
+        self._library_path = (
+            Path(read_only_library_path).resolve()
+            if read_only_library_path is not None
+            else None
+        )
 
     # ------------------------------------------------------------------
     # Public API
@@ -132,10 +147,16 @@ class SandboxManager:
         suffix = _short_id()
         return f"run-{ts}-{suffix}"
 
+    def _resolve_library_path(self) -> Path:
+        """Return the resolved library path for this instance, falling back to config."""
+        if self._library_path is not None:
+            return self._library_path
+        from src.config import READ_ONLY_LIBRARY_PATH
+        return READ_ONLY_LIBRARY_PATH.resolve()
+
     def _seed_instructions(self, run_path: Path) -> None:
         """Write the neutral instructions.txt into *run_path*."""
-        from src.config import READ_ONLY_LIBRARY_PATH
-        resolved = str(READ_ONLY_LIBRARY_PATH.resolve())
+        resolved = str(self._resolve_library_path())
         instructions_file = run_path / "instructions.txt"
         instructions_file.write_text(
             _NEUTRAL_INSTRUCTIONS.format(library_path=resolved),
@@ -147,12 +168,11 @@ class SandboxManager:
         Write lightweight per-run metadata (``run.json``) inside the run
         directory.  Metadata is framework-owned, not agent output.
         """
-        from src.config import READ_ONLY_LIBRARY_PATH
         metadata = {
             "run_name": run_name,
             "created_utc": datetime.now(timezone.utc).isoformat(),
             "sandbox_root": str(self._root),
-            "read_only_library_path": str(READ_ONLY_LIBRARY_PATH.resolve()),
+            "read_only_library_path": str(self._resolve_library_path()),
         }
         meta_file = run_path / "run.json"
         meta_file.write_text(json.dumps(metadata, indent=2), encoding="utf-8")

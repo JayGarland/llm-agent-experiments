@@ -6,6 +6,7 @@ instructions for launching the experiment with an external AI agent.
 
 Usage:
     python scripts/prepare_manual_run.py
+    python scripts/prepare_manual_run.py --library-path "F:\\Path\\To\\ExternalSubLLMWiki"
 
 This script does NOT:
     - Call any LLM or AI agent.
@@ -16,6 +17,7 @@ This script does NOT:
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -25,14 +27,29 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from src.sandbox import SandboxManager
-from src.config import SANDBOX_ROOT
+from src.config import SANDBOX_ROOT, READ_ONLY_LIBRARY_PATH
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Prepare a manual Version A experiment run directory."
+    )
+    parser.add_argument(
+        "--library-path",
+        type=str,
+        default=None,
+        help=(
+            "Optional per-run override for the read-only source/library path. "
+            "If not provided, READ_ONLY_LIBRARY_PATH from src/config.py is used "
+            f"(currently: {READ_ONLY_LIBRARY_PATH})."
+        ),
+    )
+    args = parser.parse_args()
+
     # Ensure the sandbox root exists (create if needed — safe, it's our own directory)
     SANDBOX_ROOT.mkdir(parents=True, exist_ok=True)
 
-    manager = SandboxManager(SANDBOX_ROOT)
+    manager = SandboxManager(SANDBOX_ROOT, read_only_library_path=args.library_path)
     run_path = manager.create_run()
 
     print("=" * 60)

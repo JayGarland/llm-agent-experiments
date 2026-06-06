@@ -409,3 +409,51 @@ def test_sandbox_manager_has_no_execution_api():
         f"SandboxManager exposes unexpected public names: {unexpected}. "
         "Agent execution belongs to a later branch."
     )
+
+
+# ============================================================================
+# Per-run library path override (feature/run-condition-declaration patch)
+# ============================================================================
+
+
+def test_sandbox_default_uses_config_library_path():
+    """When no library_path is given, the config default is used."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        # instructions.txt should contain the config default path
+        from src.config import READ_ONLY_LIBRARY_PATH
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert str(READ_ONLY_LIBRARY_PATH.resolve()) in content
+
+        # run.json should contain the config default path
+        meta = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+        assert meta["read_only_library_path"] == str(READ_ONLY_LIBRARY_PATH.resolve())
+
+
+def test_sandbox_custom_library_path_in_instructions():
+    """A custom library_path appears in the generated instructions.txt."""
+    with tempfile.TemporaryDirectory() as sandbox_tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        lib_path = Path(lib_tmp).resolve()
+        (lib_path / "README.md").write_text("# Test Library", encoding="utf-8")
+
+        mgr = SandboxManager(sandbox_tmp, read_only_library_path=str(lib_path))
+        run_path = mgr.create_run()
+
+        content = (run_path / "instructions.txt").read_text(encoding="utf-8")
+        assert str(lib_path) in content
+
+
+def test_sandbox_custom_library_path_in_run_json():
+    """A custom library_path appears in the generated run.json."""
+    with tempfile.TemporaryDirectory() as sandbox_tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        lib_path = Path(lib_tmp).resolve()
+
+        mgr = SandboxManager(sandbox_tmp, read_only_library_path=str(lib_path))
+        run_path = mgr.create_run()
+
+        meta = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+        assert meta["read_only_library_path"] == str(lib_path)
