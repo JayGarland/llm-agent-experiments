@@ -14,4 +14,4 @@ If you change operational behavior, generated run files, source/library path han
 Primary manuals:
 
 - `docs/manuals/user-manual.en.md`
-- `docs/manuals/jie-personal-manual.zh.md`
+- `docs/manuals/personal_manual`

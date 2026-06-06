@@ -21,7 +21,7 @@ Before returning from any task, perform a documentation impact check.
 ## Then check these manuals:
 
 - `docs/manuals/user-manual.en.md`
-- `docs/manuals/jie-personal-manual.zh.md`
+- `docs/manuals/personal_manual`
 
 ## Required return report
 
@@ -30,4 +30,3 @@ Include:
 - Did this change affect operational flow? yes/no
 - If yes, which manual sections were updated?
 - If not updated, why not?
-- Were any user-local files avoided, especially `src/config.py`?
