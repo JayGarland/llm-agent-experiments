@@ -29,6 +29,10 @@ This foundation branch is organized as follows:
 ├── docs/                      # High-level architecture and design specifications
 │   ├── references/
 │   │   └── karpathy-hello-reference.md   # The spiritual reference document
+│   ├── prompt-modules/
+│   │   ├── prompt-module-registry.md      # Composable condition module catalog
+│   │   ├── prompt-composition-guide.md    # Manual prompt assembly guide
+│   │   └── condition-set-template.md      # Per-run condition recording template
 │   ├── overview.md            # Detailed concept and background
 │   ├── permission-model.md    # Code and directory access privilege rules
 │   └── roadmap.md             # Technical roadmap and planned execution stops
@@ -95,6 +99,11 @@ pytest -v
 
 To learn map boundaries and permission models, read [docs/permission-model.md](docs/permission-model.md).
 Continuous task phases and deferred capabilities can be explored in [docs/roadmap.md](docs/roadmap.md).
+
+For prompt module selection and composition, see:
+- [Prompt Module Registry](docs/prompt-modules/prompt-module-registry.md) — catalog of composable condition modules.
+- [Prompt Composition Guide](docs/prompt-modules/prompt-composition-guide.md) — how to assemble growth prompts manually.
+- [Condition Set Template](docs/prompt-modules/condition-set-template.md) — record your choices per run.
 
 For branch derivations rules, consult [docs/roadmap.md](docs/roadmap.md).
 
