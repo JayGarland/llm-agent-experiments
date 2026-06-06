@@ -61,13 +61,3 @@ When operational behavior changes, inspect:
 Then either:
 1. update the manuals in the same change, or
 2. explicitly report why no manual update is needed.
-
-## Scope Discipline
-
-Do not add watcher, trigger automation, provider integration, agent runner, or hard sandboxing unless explicitly requested.
-
-Do not use `git add .`.
-
-Stage only intended files.
-
-Never commit user-local `src/config.py` path edits unless explicitly asked.
