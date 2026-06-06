@@ -1,6 +1,6 @@
 # Project Overview: Free-Directory Agent Experiment Framework
 
-This project is a sophisticated experiment environment for local, autonomous AI-agent workflows. It is designed to host sandboxed trials where a single or multiple successive AI agents discover, explore, and manipulate a local environment freely.
+This project provides generic foundation scaffolding for local, autonomous AI-agent workflows. It prepares structure and documentation to host sandboxed trials where a single or multiple successive AI agents can discover, explore, and manipulate a local environment freely.
 
 ## 1. Core Concept & Philosophy
 
@@ -10,7 +10,7 @@ The project is heavily inspired by Andrej Karpathy's "Version A" free-directory 
 2. The agent is given no pre-assigned task, no specific goal, and no user-driven instructions.
 3. The prompt is simply: "go".
 4. The agent is free to inspect, create, edit, and run files, exploring the limits of its own capabilities and curiosity.
-5. Upon completion, the agent leaves behind a journal or message (typically named `HELLO.md`) describing its actions, thoughts, and guidance for a future instance.
+5. Upon completion, the agent may leave behind a journal or message (typically named `HELLO.md`) describing its actions, thoughts, and guidance for a future instance.
 
 ### The "Our Variant" Enhancement
 
@@ -23,7 +23,7 @@ The agent can query, traverse, read, and reference this library, but cannot modi
 
 ## 2. Correct Experiment Formula
 
-We explicitly avoid predefining the experiment result as a fixed "artifact ecology". The formula is open-ended:
+The goal is to observe how read-only source/library access conditions free agent exploration. We explicitly avoid predefining the experiment result as a fixed success criterion. The formula is open-ended:
 
 $$\text{Karpathy Version A Setup} + \text{Read-Only Library (Wiki)} + \text{Writable Sandbox} = \text{Open Observation of Agent Behavior}$$
 
@@ -34,14 +34,17 @@ Rather than forcing the agent to build certain objects or structures, we observe
 * Knowledge maps, structured logs, and journal entries
 * Unexpected artifacts, tools, or self-narratives inside the sandbox
 
+These are potential raw data observations, not a required structural result.
+
 ## 3. High-Level Workspace Architecture
 
 Our generic base architecture is composed of:
 
 1. **Source Library (`library_sample/`):** A structure simulating the read-only wiki, holding baseline system state and references.
-2. **Sandbox (`sandbox/`):** The isolated, writable workspace. Real executions compile and run within individual, isolated subdirectories (e.g., `sandbox/run-YYYYMMDD-HHMMSS/`).
-3. **Core Scaffolding (`src/`):** Minimal, robust python modules organizing config management, sandbox creation, and agent launching.
+2. **Sandbox (`sandbox/`):** The writable workspace layout. Operational execution runs and dynamic creation occur in downstream feature branches.
+3. **Core Scaffolding (`src/`):** Non-operational structural layout of configurations, sandbox managers, and agent execution stubs.
+
+Present boundaries in the base branch are advisory/interface-level only. OS-level containment and secure locking mechanisms are deferred to future work.
 
 For details on security boundaries and file operations, please refer to [docs/permission-model.md](permission-model.md).
 For our future development goals, please refer to [docs/roadmap.md](roadmap.md).
-
