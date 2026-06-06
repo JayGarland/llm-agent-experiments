@@ -120,3 +120,23 @@ Safe continuation runs (second/later instances): **[docs/continuation-run.md](do
 
 This is the first usable MVP — no automated agent execution, no LLM provider
 integration. The agent runs externally and you observe the results.
+
+---
+
+## 6. Run Condition Modes
+
+Control experimental variables before each run:
+
+- **[Run Condition Declaration](docs/run-condition-declaration.md)** — define
+  workspace boundary, source relation, tool mode, output posture, platform,
+  and continuation policy. Includes a reusable YAML template.
+
+- **[Markdown-Only Source-as-Soil Prompt](docs/prompts/markdown-only-source-as-soil.md)** —
+  current best practical prompt (Run 008). Real directory, real Markdown writes,
+  no executables, reduced coding collapse.
+
+- **[Platform Fit Summary](docs/platform-fit-summary.md)** — current and future
+  platform assessment (Copilot, Claude Code, Crush, custom harness).
+
+- **[First Eight Run Findings](docs/first-eight-run-findings.md)** — empirical
+  comparison of Runs 001–008 with key concepts and emerged attractors.
