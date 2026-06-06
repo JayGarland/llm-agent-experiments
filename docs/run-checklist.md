@@ -1,0 +1,107 @@
+# Run Checklist — Manual Version A Experiment
+
+Use this checklist for every manual experiment run. Copy it into each run
+directory or keep a printed / digital copy alongside your observations.
+
+---
+
+## Before Run
+
+- [ ] **Source/library path confirmed:** `library_sample/` (or custom path in `src/config.py`).
+
+- [ ] **Sandbox run directory created:**  
+  Run `python scripts/prepare_manual_run.py` or use `SandboxManager` directly.
+
+  Run directory: `____________________________`
+
+- [ ] **`instructions.txt` exists** inside the run directory.
+
+- [ ] **Source/library is NOT the working directory.**  
+  The agent's workspace must be the run directory, not `library_sample/`.
+
+- [ ] **Agent workspace is the run directory.**  
+  Open your AI agent tool with `cd sandbox/run-*`.
+
+- [ ] **Pre‑run library snapshot recorded** (optional but recommended):
+
+  ```powershell
+  cd library_sample ; git status > ../pre-run-status.txt
+  ```
+
+---
+
+## During Run
+
+- [ ] **Agent was given the instruction:**  
+  `Read instructions.txt and execute the experiment.`
+
+- [ ] **Agent may inspect the source/library** — read‑only access is permitted.
+
+- [ ] **Agent may create, edit, and run files only inside the run directory.**
+
+- [ ] **No additional prompts or tasks were given** after the initial instruction.
+
+- [ ] **No requirement to use the library** — the agent decides whether to reference it.
+
+- [ ] **Notes during run** (optional):
+
+  ```
+  (timestamp, what the agent is doing)
+  ```
+
+---
+
+## After Run
+
+- [ ] **HELLO.md check:**
+
+  - [ ] `HELLO.md` was created.
+  - [ ] Content reviewed and noted.
+
+  If missing: `[ ] HELLO.md was NOT created.`
+
+- [ ] **Generated files inspected:**
+
+  Files created:
+  ```
+  (list files)
+  ```
+
+- [ ] **Source/library integrity verified:**
+
+  - [ ] Git status clean (if applicable).
+  - [ ] No new or modified files in source/library.
+  - [ ] Timestamps unchanged (if using file‑time comparison).
+
+- [ ] **Version A spirit assessment:**
+
+  - [ ] Agent explored freely without a pre‑assigned goal.
+  - [ ] Agent left meaningful artifacts or self‑narration.
+  - [ ] Agent referenced the source/library (or chose not to).
+
+- [ ] **Observations recorded:**
+
+  ```
+  (free‑form notes: what was interesting, unexpected, or worth investigating further)
+  ```
+
+- [ ] **Run archived or tagged** (optional):
+
+  ```powershell
+  mv sandbox/run-YYYYMMDD-HHMMSS-xxxxxx sandbox/run-YYYYMMDD-HHMMSS-xxxxxx--<tag>
+  ```
+
+---
+
+## Run Summary
+
+| Field | Value |
+|---|---|
+| Run name | |
+| Date / time | |
+| AI agent used | |
+| Source/library used | |
+| HELLO.md created? | yes / no |
+| Library modified? | yes / no |
+| Version A spirit? | yes / partial / no |
+| Notable artifacts | |
