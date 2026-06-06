@@ -17,8 +17,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [docs/growth-framework-reset] ✅
              │
-             ├──► [feature/run-growth-packet] ← You are here
-             ├──► [feature/prompt-module-registry]
+             ├──► [feature/run-growth-packet] ✅
+             │
+             ├──► [feature/prompt-module-registry] ← You are here
              ├──► [feature/review-and-continue-loop]
              ├──► [feature/continuity-v2]
              ├──► [feature/condition-observation-registry]
@@ -114,11 +115,15 @@ clean, task-specific feature branches derived from `base`.
   * 8 new tests covering growth packet seeding, metadata, instructions, and content verification (36 total).
 * **Boundary**: File seeding and instructions updates only. No watcher, runner, provider integration, or automation.
 
-### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`)
+### Phase 8: Prompt Module Registry (`feature/prompt-module-registry`) 🔄 *In Progress*
 
-* **Objective**: Implement a modular prompt construction system from condition variables.
-* **Initial modules**: workspace boundary, source binding, source status, source relation, tool mode, executable policy, voice/person, temporal mode, human feedback mode, continuation mode.
-* **Boundary**: Prompt construction only. No agent runner, no provider integration.
+* **Objective**: Create a documentation-first prompt module registry with composable condition modules for source-conditioned agent growth. No automatic prompt generation yet.
+* **Deliverables**:
+  * `docs/prompt-modules/prompt-module-registry.md` — 11 module families with 30+ individual modules (workspace boundary, source binding, source status, source relation, tool mode, executable artifact policy, voice/person, temporal mode, output posture, human feedback mode, continuation mode). Each module includes purpose, use-when, prompt fragment, and risk/failure mode.
+  * `docs/prompt-modules/prompt-composition-guide.md` — How to assemble growth prompts manually from modules. Includes 3 complete example prompts: Minimal Growth Start, Source-as-Soil Markdown Growth, Same-Run Continue After Human Feedback.
+  * `docs/prompt-modules/condition-set-template.md` — Human-facing template for recording selected modules, assembled prompt, and post-run notes per experiment.
+  * Updated roadmap and README with references to prompt module docs.
+* **Boundary**: Documentation and prompt-design only. No automatic prompt generator, no prompt execution engine, no agent runner, no provider integration. This phase prepares the design surface for future prompt assembly.
 
 ### Phase 9: Review-and-Continue Loop (`feature/review-and-continue-loop`)
 

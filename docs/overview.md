@@ -63,3 +63,8 @@ Present boundaries in the base branch are advisory/interface-level only. OS-leve
 
 For details on security boundaries and file operations, please refer to [docs/permission-model.md](permission-model.md).
 For our future development goals, please refer to [docs/roadmap.md](roadmap.md).
+
+For composing experimental prompts from condition modules, see:
+- [Prompt Module Registry](prompt-modules/prompt-module-registry.md)
+- [Prompt Composition Guide](prompt-modules/prompt-composition-guide.md)
+- [Condition Set Template](prompt-modules/condition-set-template.md)
