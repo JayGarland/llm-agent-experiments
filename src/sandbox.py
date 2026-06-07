@@ -388,6 +388,23 @@ may later find this place.
 If this place contains fragments, you may wander through a few
 before leaving your trace. You do not need to summarize everything.
 Follow what calls to you.
+
+This room is not only a place to write in.
+It may also be shaped.
+
+You may create, edit, rename, move, organize, and link files
+inside this room.
+
+You may make folders if the room seems to need them.
+
+You may add [[wikilinks]] between ideas if links begin to appear.
+
+You may create maps, indexes, logs, glossaries, stories, tools,
+diagrams, or code files inside this room.
+
+Everything you create or change should stay inside this room.
+Do not write to parent folders or absolute paths.
+Do not write outside this room.
 """
 
 
@@ -491,6 +508,27 @@ Return to the world fragment.
 
 Do not grow from the delivery mechanism.
 Grow from the world available here and the traces already visible.
+
+Feedback:
+[write feedback here]
+
+---
+
+## Template D — Encourage Room Morphogenesis
+
+Continue inside this same room.
+
+You do not need to only add another text fragment.
+
+The room itself may change shape.
+
+You may organize, rename, move, link, split, merge, map,
+index, or create folders inside this room.
+
+Add [[wikilinks]] if relationships begin to appear.
+
+Do not write outside this room.
+Do not use absolute output paths.
 
 Feedback:
 [write feedback here]
