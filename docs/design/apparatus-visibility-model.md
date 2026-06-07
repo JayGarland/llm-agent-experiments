@@ -120,6 +120,14 @@ You may write what you perceive.
 
 **Status:** Main next implementation direction (Phase 4D+).
 
+**A2.1 — Detached Neutral Export (implemented):** A2.0 repo-local runs may still
+leak the repo path (`F:\GitHub\llm-agent-experiments\sandbox\run-...`) to the
+agent. `scripts/export_agent_view.py` exports `agent_view/` to a neutral external
+folder (e.g., `C:\Worlds\room-001`) whose path does not reveal the project or
+apparatus. This is a one-way export — no automatic sync back. Operator manually
+copies agent output back if desired. Export metadata recorded in
+`operator/EXPORT_NOTES.md`.
+
 ### A3 — Harness-Mediated Source Projection
 
 **Concept:** A harness (future software layer) projects selected source/library

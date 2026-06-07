@@ -758,6 +758,109 @@ def test_a2_operator_files_exist():
 
 
 # ============================================================================
+# Detached neutral agent view export tests (feature/detached-neutral-agent-view)
+# ============================================================================
+
+from scripts.export_agent_view import (
+    validate_run_for_export,
+    copy_agent_view,
+    write_export_notes,
+    _check_path_hygiene,
+)
+
+
+def test_export_validates_agent_view_exists():
+    """Export requires agent_view/ in the run."""
+    with tempfile.TemporaryDirectory() as tmp:
+        run = Path(tmp) / "run-test"
+        run.mkdir()
+        (run / "operator").mkdir()
+        (run / "operator" / "run.json").write_text(
+            json.dumps({"mode": "apparatus-minimized"}), encoding="utf-8"
+        )
+        # No agent_view — should fail
+        with pytest.raises(SystemExit):
+            validate_run_for_export(run)
+
+
+def test_export_requires_apparatus_minimized_mode():
+    """Export requires mode apparatus-minimized in run.json."""
+    with tempfile.TemporaryDirectory() as tmp:
+        run = Path(tmp) / "run-test"
+        run.mkdir()
+        (run / "agent_view").mkdir()
+        (run / "operator").mkdir()
+        (run / "operator" / "run.json").write_text(
+            json.dumps({"mode": "standard-growth"}), encoding="utf-8"
+        )
+        with pytest.raises(SystemExit):
+            validate_run_for_export(run)
+
+
+def test_export_validates_successfully():
+    """A valid A2 run passes validation."""
+    with tempfile.TemporaryDirectory() as tmp:
+        run = Path(tmp) / "run-test"
+        run.mkdir()
+        (run / "agent_view").mkdir()
+        (run / "operator").mkdir()
+        (run / "operator" / "run.json").write_text(
+            json.dumps({"mode": "apparatus-minimized"}), encoding="utf-8"
+        )
+        av, op = validate_run_for_export(run)
+        assert av == run / "agent_view"
+        assert op == run / "operator"
+
+
+def test_export_copies_agent_view_files():
+    """Export copies WAKE.md and WORLD.md, not operator/ or run.json."""
+    with tempfile.TemporaryDirectory() as src_tmp, \
+         tempfile.TemporaryDirectory() as tgt_tmp:
+        agent_view = Path(src_tmp) / "agent_view"
+        agent_view.mkdir()
+        (agent_view / "WAKE.md").write_text("# Wake", encoding="utf-8")
+        (agent_view / "WORLD.md").write_text("# World", encoding="utf-8")
+
+        target = Path(tgt_tmp) / "room-001"
+        copy_agent_view(agent_view, target)
+
+        assert (target / "WAKE.md").exists()
+        assert (target / "WORLD.md").exists()
+        assert (target / "WAKE.md").read_text(encoding="utf-8") == "# Wake"
+        # Must not contain operator or run.json
+        assert not (target / "operator").exists()
+        assert not (target / "run.json").exists()
+
+
+def test_export_notes_written():
+    """Export writes EXPORT_NOTES.md to operator/."""
+    with tempfile.TemporaryDirectory() as tmp:
+        operator_dir = Path(tmp) / "operator"
+        operator_dir.mkdir()
+        target = Path("C:/Worlds/room-001")
+
+        notes = write_export_notes(operator_dir, target, [])
+        assert notes.exists()
+        content = notes.read_text(encoding="utf-8")
+        assert "room-001" in content
+        assert "one-way export" in content
+        assert "no automatic sync" in content.lower()
+
+
+def test_path_hygiene_warns_on_apparatus_terms():
+    """Path hygiene check flags apparatus-like terms."""
+    warnings = _check_path_hygiene(Path("C:/GitHub/experiment/test"))
+    assert "github" in warnings
+    assert "experiment" in warnings
+
+
+def test_path_hygiene_clean_on_neutral_path():
+    """Path hygiene check passes for neutral paths."""
+    warnings = _check_path_hygiene(Path("C:/Worlds/room-001"))
+    assert warnings == []
+
+
+# ============================================================================
 # Per-run library path override (feature/run-condition-declaration patch)
 # ============================================================================
 
