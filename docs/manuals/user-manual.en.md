@@ -390,9 +390,45 @@ The operator review...
 | Mode | Agent sees | Use when | First prompt |
 |---|---|---|---|
 | `standard-growth` | Framework packet + growth files | Normal source-conditioned growth | `Read instructions.txt...` or selected growth prompt |
-| `apparatus-minimized` | `WAKE.md`, `WORLD.md`, visible traces | Brain-in-vat / phenomenal enclosure / reduce framework-meta drift | `Read WAKE.md.` |
+| `apparatus-minimized` | `WAKE.md`, `WORLD.md`, `fragments/`, visible traces | Brain-in-vat / phenomenal enclosure / reduce framework-meta drift | `Read WAKE.md.` |
 
 A2 is not a replacement for standard-growth. It is a separate mode.
+
+### Base A2 Capabilities
+
+All A2 detached rooms now include these base capabilities in `WAKE.md`:
+
+#### Workspace Plasticity
+
+The room workspace is fully plastic. The agent may:
+- Inspect, search, edit, rename, move, and reorganize files and folders.
+- Add `[[wikilinks]]` between ideas.
+- Create maps, indexes, routes, tools, scripts, or other room-local artifacts.
+- Transform copied fragments — they are room material, not the original source/library.
+
+**Hard boundary:** Do not modify anything outside the current room workspace.
+The original external source/library is read-only and far from here.
+
+#### Optional Agent-Initiated Web Search
+
+The agent may use web search if the room genuinely needs outside novelty
+and if the current platform supports search.
+
+Search is framed as **outside novelty** — not a task, not a research
+assignment, not permission to browse endlessly.
+
+- Search is optional, not mandatory.
+- Do not browse endlessly.
+- Do not write a research report.
+- Do not let the web replace the room.
+- Bring back only what changes the room.
+- After searching, return to the room.
+- The agent may decide how, whether, and where to leave a room-local trace.
+- If search does not matter, do not record it.
+- If the room does not need outside novelty, the agent may choose not to search.
+
+No fixed folder or search-note convention is generated.
+The agent decides its own conventions.
 
 ### A2.1 — Detached Neutral Agent View
 

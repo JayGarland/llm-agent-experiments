@@ -403,22 +403,51 @@ are all valid traces.
 
 Let the room change because you passed through it.
 
-This room is not only a place to write in.
-It may also be shaped.
+---
 
-You may create, edit, rename, move, organize, and link files
-inside this room.
+## Room Workspace
 
-You may make folders if the room seems to need them.
+This room is fully yours to shape.
 
-You may add [[wikilinks]] between ideas if links begin to appear.
+Inside this room, you may:
+- inspect files;
+- search local room files;
+- edit, rename, move, and reorganize files and folders;
+- add [[wikilinks]] between ideas;
+- create maps, indexes, routes, tools, scripts, or other room-local artifacts;
+- transform any copied fragments — they are room material now.
 
-You may create maps, indexes, logs, glossaries, stories, tools,
-diagrams, or code files inside this room.
+The original external source/library is read-only and far from here.
+Everything inside this room is material for growth.
 
-Everything you create or change should stay inside this room.
-Do not write to parent folders or absolute paths.
-Do not write outside this room.
+Do not modify anything outside this room workspace.
+Do not modify parent directories, sibling rooms, or system files.
+
+---
+
+## Reaching Outside
+
+You may use web search if the room seems to need outside novelty
+and if your platform supports search.
+
+Search is optional.
+
+Do not browse endlessly.
+Do not write a research report.
+Do not let the web replace the room.
+
+If you search, bring back only what changes the pressure, question,
+direction, texture, or structure of this room.
+
+After searching, return to the room.
+
+You may decide how, whether, and where to leave a room-local trace
+of what entered.
+
+If it does not matter, do not record it.
+If the room does not need outside novelty, you may choose not to search.
+
+Continue from the room, not from the web.
 """
 
 
