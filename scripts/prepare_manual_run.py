@@ -140,6 +140,7 @@ def main() -> None:
         from scripts.build_world_fragment import (
             build_world_md,
             write_world_md,
+            write_fragments,
             write_source_note,
             list_library_files,
         )
@@ -158,6 +159,7 @@ def main() -> None:
                 print(f"  WORLD.md: whole-library mode ({len(selected)} file(s)).")
         if selected:
             world_content = build_world_md(library, selected)
+            write_fragments(agent_view, library, selected)
         else:
             world_content = (
                 "# World Fragment\n\n"

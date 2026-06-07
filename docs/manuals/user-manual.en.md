@@ -197,8 +197,9 @@ see the experiment framework by default.
 **Mental model:** In standard-growth mode (A0), the agent sees the full
 framework packet. In A2, the agent sees only:
 
-- `WAKE.md` — entry point
-- `WORLD.md` — world fragment
+- `WAKE.md` — entry point (encourages wandering, don't summarize everything)
+- `WORLD.md` — entrance/index to the world
+- `fragments/` — world material as neutral `fragment-001.md`, `fragment-002.md`, ...
 - visible traces (HELLO.md, output files)
 
 The goal:
@@ -227,9 +228,38 @@ python scripts/prepare_manual_run.py ^
   --export
 ```
 
-This single command: creates the A2 run, builds WORLD.md from the **whole**
-source library (all .md/.txt files), and exports agent_view/ to an auto-generated
-neutral room under `C:\Worlds\room-YYYYMMDD-HHMMSS-xxxxxx`.
+This single command: creates the A2 run, builds a **world pack** (WORLD.md
+as entrance/index + `fragments/` containing the source material), and exports
+agent_view/ to an auto-generated neutral room under `C:\Worlds\room-...`.
+
+**Layout (detached room):**
+
+```
+C:\Worlds\room-.../
+  WAKE.md                  ← Entry point
+  WORLD.md                 ← Entrance/index with fragment list
+  fragments/               ← World material, neutrally named
+    fragment-001.md
+    fragment-002.md
+    ...
+```
+
+**Layout (repo-local):**
+
+```
+sandbox/run-.../
+  agent_view/
+    WAKE.md
+    WORLD.md
+    fragments/
+      fragment-001.md
+      ...
+  operator/
+    WORLD_SOURCE_NOTE.md   ← Source provenance (operator-side)
+    ...
+```
+
+**Open the AI agent only in the detached room** (or `agent_view/` if not exported).
 
 **Precision mode** (select specific files):
 
@@ -243,81 +273,20 @@ python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "
 python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "..." --export --worlds-root "D:\Worlds"
 ```
 
-**Layout:**
+### How the World Pack Works
 
-   ```
-   sandbox/run-.../
-     agent_view/        ← Agent workspace (open agent here)
-       WAKE.md
-       WORLD.md
-     operator/          ← Operator tools (agent cannot see)
-       run.json
-       CONDITION_SET.md
-       REVIEW_LOOP.md
-       OPERATOR_REVIEW.md
-       FEEDBACK_PROMPT.md
-       CONTINUITY_NOTES.md
-   ```
+`WORLD.md` is now an **entrance/index**, not a giant content dump. It tells the
+agent it is in a world made of fragments and lists the available fragment paths.
 
-3. **Fill or review `agent_view/WORLD.md`** before launch (see below).
+The actual world material lives in `fragments/fragment-001.md`, `fragment-002.md`,
+etc. Each fragment uses a neutral heading (`# Fragment 001`) and contains the
+original source content. Original source filenames and paths are never exposed.
 
-4. **Open the AI agent only in `agent_view/`:**
+`WAKE.md` encourages the agent to wander through a few fragments and explicitly
+says it does not need to summarize everything.
 
-   ```powershell
-   cd sandbox\run-...\agent_view
-   <open your AI agent here>
-   ```
-
-5. **First prompt — and only this:**
-
-   ```
-   Read WAKE.md.
-   ```
-
-6. **Do NOT open the agent in:** run root, `operator/`, repo root, or the
-   source/library path.
-
-7. **After the run, inspect** `agent_view/HELLO.md` and any visible traces.
-   Use `operator/` files for review (see Review Flow below).
-
-### How to Prepare WORLD.md
-
-`WORLD.md` is **not** a source index, a task brief, or a summary request.
-It is the world fragment the agent receives. It should contain selected
-material without exposing the apparatus.
-
-**Good example:**
-
-```
-# World Fragment
-
-A set of notes describes recurring ideas of stochastic exposure,
-viable gradients, intermediate valleys, and retrospective structuring.
-These ideas appear as traces of a system trying to grow through
-uncertainty.
-
-[Paste selected world material here.]
-```
-
-**Bad example — do NOT do this:**
-
-```
-# World Fragment
-
-Operator note:
-This content was copied from F:\Obsidian\MyWiki.
-You are an AI agent in an apparatus-minimized experiment.
-Please analyze this source/library.
-```
-
-**Rules for WORLD.md:**
-- Do not write `operator`, `framework`, `experiment`, `source/library`,
-  `run.json`, or other apparatus language.
-- If the world fragment is empty, the agent has little world input.
-- For now, you manually curate or paste world material from the external
-  source/library — no automatic projection yet.
-- If you want stronger brain-in-vat / phenomenal enclosure, keep WORLD.md
-  free of apparatus words.
+The agent may browse fragments selectively. Source provenance (which original
+file maps to which fragment) is recorded only in `operator/WORLD_SOURCE_NOTE.md`.
 
 ### Launching the Agent in A2 Mode
 

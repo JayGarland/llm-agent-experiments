@@ -31,7 +31,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/world-fragment-builder] ✅
              │
-             ├──► [feature/a2-preparation-ergonomics] ← You are here
+             ├──► [feature/a2-preparation-ergonomics] ✅
+             │
+             ├──► [feature/world-pack-fragments] ← You are here
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
              │
