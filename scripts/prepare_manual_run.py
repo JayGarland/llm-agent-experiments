@@ -65,6 +65,7 @@ def main() -> None:
         default=None,
         help=(
             "Source files (relative to library root) to build agent_view/WORLD.md from. "
+            "If omitted, all .md and .txt files from the whole library are used. "
             "Only valid with --mode apparatus-minimized."
         ),
     )
@@ -74,11 +75,31 @@ def main() -> None:
         help="Overwrite existing WORLD.md when using --world-files.",
     )
     parser.add_argument(
+        "--export",
+        action="store_true",
+        help=(
+            "Export agent_view/ to a detached neutral room after creation. "
+            "Auto-generates room under C:\\Worlds (or --worlds-root). "
+            "Only valid with --mode apparatus-minimized."
+        ),
+    )
+    parser.add_argument(
+        "--worlds-root",
+        type=str,
+        default=None,
+        help=(
+            "Root directory for auto-generated neutral rooms. "
+            "Default: C:\\Worlds (Windows) or ~/Worlds (other). "
+            "Only used with --export when --export-target is not provided."
+        ),
+    )
+    parser.add_argument(
         "--export-target",
         type=str,
         default=None,
         help=(
             "Target folder for detached neutral agent view export. "
+            "Overrides --worlds-root auto-generation. "
             "Only valid with --mode apparatus-minimized."
         ),
     )
@@ -90,10 +111,16 @@ def main() -> None:
     args = parser.parse_args()
 
     # Validate incompatible args
-    if args.world_files and args.mode != "apparatus-minimized":
+    if args.world_files is not None and args.mode != "apparatus-minimized":
         sys.exit("Error: --world-files requires --mode apparatus-minimized.")
-    if args.export_target and args.mode != "apparatus-minimized":
-        sys.exit("Error: --export-target requires --mode apparatus-minimized.")
+    if (args.export_target or args.export) and args.mode != "apparatus-minimized":
+        sys.exit("Error: --export / --export-target require --mode apparatus-minimized.")
+    if args.export_target and args.worlds_root:
+        print("Warning: --export-target overrides --worlds-root. Ignoring --worlds-root.")
+    if args.export and args.export_target:
+        pass  # --export-target takes priority
+    if args.worlds_root and not args.export:
+        sys.exit("Error: --worlds-root requires --export.")
 
     # Ensure the sandbox root exists
     SANDBOX_ROOT.mkdir(parents=True, exist_ok=True)
@@ -101,35 +128,70 @@ def main() -> None:
     manager = SandboxManager(SANDBOX_ROOT, read_only_library_path=args.library_path)
 
     if args.mode == "apparatus-minimized":
+        import secrets
+        from datetime import datetime
+
         run_path = manager.create_apparatus_minimized_run()
         agent_view = run_path / "agent_view"
         operator_dir = run_path / "operator"
+        library = args.library_path or str(READ_ONLY_LIBRARY_PATH)
 
-        # Build WORLD.md if requested
+        # Build WORLD.md — whole-library default, or precision mode
+        from scripts.build_world_fragment import (
+            build_world_md,
+            write_world_md,
+            write_source_note,
+            list_library_files,
+        )
         if args.world_files is not None:
             if not args.world_files:
                 sys.exit("Error: --world-files requires at least one file path.")
-            from scripts.build_world_fragment import (
-                build_world_md,
-                write_world_md,
-                write_source_note,
+            selected = args.world_files
+            is_whole = False
+            print(f"  WORLD.md: precision mode ({len(selected)} file(s)).")
+        else:
+            selected = list_library_files(library)
+            is_whole = True
+            if not selected:
+                print(f"  Warning: no .md/.txt files found in library. WORLD.md will be empty placeholder.")
+            else:
+                print(f"  WORLD.md: whole-library mode ({len(selected)} file(s)).")
+        if selected:
+            world_content = build_world_md(library, selected)
+        else:
+            world_content = (
+                "# World Fragment\n\n"
+                "You are inside the following world fragment.\n\n"
+                "The material below is the world currently available here.\n\n"
+                "---\n\n[This space is empty.]\n"
             )
-            library = args.library_path or str(READ_ONLY_LIBRARY_PATH)
-            world_content = build_world_md(library, args.world_files)
-            write_world_md(agent_view, world_content)
-            write_source_note(operator_dir, library, args.world_files, "World Fragment")
-            print(f"  WORLD.md built from {len(args.world_files)} file(s).")
-            print()
+        write_world_md(agent_view, world_content)
+        write_source_note(
+            operator_dir, library, selected if selected else [], "World Fragment",
+            total_chars=len(world_content),
+            is_whole_library=is_whole,
+        )
+        print()
 
-        # Export if requested
+        # Export
         launch_path = agent_view
-        if args.export_target:
+        if args.export or args.export_target:
             from scripts.export_agent_view import (
                 copy_agent_view,
                 write_export_notes,
                 _check_path_hygiene,
             )
-            target = Path(args.export_target).resolve()
+            if args.export_target:
+                target = Path(args.export_target).resolve()
+            else:
+                roots = Path(args.worlds_root) if args.worlds_root else (
+                    Path("C:/Worlds") if sys.platform == "win32" else Path.home() / "Worlds"
+                )
+                roots.mkdir(parents=True, exist_ok=True)
+                ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+                sid = secrets.token_hex(3)
+                target = (roots / f"room-{ts}-{sid}").resolve()
+
             warnings = _check_path_hygiene(target)
             if warnings:
                 print("Warning: target path contains apparatus-like terms:")
@@ -150,8 +212,8 @@ def main() -> None:
         print(f"  Run directory:  {run_path}")
         print(f"  Agent view:     {agent_view}")
         print(f"  Operator dir:   {operator_dir}")
-        if args.export_target:
-            print(f"  Exported to:    {launch_path}")
+        if launch_path != agent_view:
+            print(f"  Detached room:  {launch_path}")
         print()
         print("—" * 60)
         print("  To launch the experiment:")
@@ -159,20 +221,16 @@ def main() -> None:
         print(f"    cd {launch_path}")
         print(f"    <open your AI agent here>")
         print()
-        if launch_path != agent_view and launch_path == Path(args.export_target).resolve() if args.export_target else False:
-            pass  # detached — no repo warnings needed
-        else:
+        if launch_path == agent_view:
             print("  Do NOT open the agent in:")
-            print(f"    {run_path}          (run root — exposes operator/)")
+            print(f"    {run_path}          (run root)")
             print(f"    {operator_dir}      (operator dir)")
             print("    repo root")
             print("    source/library path")
             print()
             print("  Repo-local A2 may leak path information.")
-            print("  Consider --export-target for detached neutral launch.")
-            print()
-        if not args.world_files:
-            print("  Fill or review agent_view/WORLD.md before launch.")
+            print("  Use --export for detached neutral launch.")
+        print()
         print("  Give the agent only:")
         print()
         print('    "Read WAKE.md."')
@@ -180,14 +238,19 @@ def main() -> None:
         print("—" * 60)
         print()
         print("  After the run:")
-        if args.export_target:
+        if launch_path != agent_view:
             print(f"    cat {launch_path / 'HELLO.md'}")
             print(f"    Manually copy traces back to {agent_view} if archiving.")
         else:
             print(f"    cat {agent_view / 'HELLO.md'}")
-            print(f"    See {operator_dir / 'OPERATOR_REVIEW.md'}")
-            print(f"    ls -R {run_path}")
+        print(f"    See {operator_dir / 'WORLD_SOURCE_NOTE.md'} for world provenance.")
+        print(f"    See {operator_dir / 'OPERATOR_REVIEW.md'} for review.")
         print()
+        if is_whole and selected:
+            print(f"  {len(selected)} source files included in WORLD.md.")
+            print(f"  To rebuild after source changes:")
+            print(f"    python scripts/build_world_fragment.py --run \"{run_path}\" --overwrite")
+            print()
         print("=" * 60)
     else:
         run_path = manager.create_run()

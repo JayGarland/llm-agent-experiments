@@ -84,6 +84,22 @@ def resolve_safe(library_root: str, rel_path: str) -> Path:
     return resolved
 
 
+def list_library_files(library_root: str) -> list[str]:
+    """
+    Return sorted relative paths of all .md and .txt files under
+    *library_root*, recursively.
+    """
+    root = Path(library_root).resolve()
+    if not root.is_dir():
+        return []
+    files: list[str] = []
+    for p in sorted(root.rglob("*")):
+        if p.is_file() and p.suffix.lower() in (".md", ".txt"):
+            rel = str(p.relative_to(root))
+            files.append(rel)
+    return files
+
+
 # ---------------------------------------------------------------------------
 # WORLD.md builder
 # ---------------------------------------------------------------------------
@@ -130,15 +146,26 @@ def write_source_note(
     library_path: str,
     files: list[str],
     title: str,
+    total_chars: int = 0,
+    is_whole_library: bool = False,
 ) -> Path:
     """Write operator/WORLD_SOURCE_NOTE.md with provenance."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    mode = "whole-library" if is_whole_library else "selected files"
     file_list = "\n".join(f"- {f}" for f in files)
-    rebuild_cmd = (
-        f"python scripts/build_world_fragment.py "
-        f"--run \"{operator_dir.parent}\" "
-        + " ".join(f'--files "{f}"' for f in files)
-    )
+    if is_whole_library:
+        rebuild_cmd = (
+            f"python scripts/build_world_fragment.py "
+            f"--run \"{operator_dir.parent}\" --overwrite"
+        )
+    else:
+        rebuild_cmd = (
+            f"python scripts/build_world_fragment.py "
+            f"--run \"{operator_dir.parent}\" "
+            + " ".join(f'--files "{f}"' for f in files)
+            + " --overwrite"
+        )
+    size_note = f"- Total characters: {total_chars}" if total_chars else ""
 
     content = f"""\
 # World Source Note
@@ -146,6 +173,9 @@ def write_source_note(
 ## Source
 
 - Read-only source path: {library_path}
+- Mode: {mode}
+- Files included: {len(files)}
+{size_note}
 - Selected files:
 {file_list}
 - Built at: {now}
@@ -179,15 +209,18 @@ Do not use automatic watcher sync. Rebuild explicitly when needed.
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Build agent_view/WORLD.md from selected source files."
+        description="Build agent_view/WORLD.md from source files (whole-library or selected)."
     )
     parser.add_argument(
         "--run", type=str, required=True,
         help="Path to the A2 sandbox run directory.",
     )
     parser.add_argument(
-        "--files", type=str, nargs="+", required=True,
-        help="Source files (relative to the read-only library root).",
+        "--files", type=str, nargs="*", default=None,
+        help=(
+            "Source files (relative to library root). "
+            "If omitted, all .md and .txt files from the whole library are used."
+        ),
     )
     parser.add_argument(
         "--title", type=str, default="World Fragment",
@@ -198,6 +231,56 @@ def main() -> None:
         help="Overwrite existing WORLD.md without prompt.",
     )
     args = parser.parse_args()
+
+    run_path = Path(args.run).resolve()
+
+    # Validate
+    agent_view, operator_dir, library_path = validate_a2_run(run_path)
+
+    # Determine file list
+    if args.files is not None and len(args.files) == 0:
+        sys.exit("Error: --files provided but empty. Omit --files for whole-library mode.")
+    if args.files is not None:
+        selected_files = args.files
+        is_whole_library = False
+    else:
+        selected_files = list_library_files(library_path)
+        is_whole_library = True
+        if not selected_files:
+            sys.exit(f"Error: no .md or .txt files found in library: {library_path}")
+
+    # Check overwrite
+    world_md = agent_view / "WORLD.md"
+    if world_md.exists() and not args.overwrite:
+        sys.exit(
+            f"Error: WORLD.md already exists: {world_md}\n"
+            "Use --overwrite to rebuild it."
+        )
+
+    # Build
+    mode_label = "whole library" if is_whole_library else f"{len(selected_files)} selected"
+    print(f"Building WORLD.md from {mode_label} ({len(selected_files)} file(s))...")
+    content = build_world_md(library_path, selected_files, args.title)
+    write_world_md(agent_view, content)
+    print(f"  Written: {world_md}")
+
+    # Write source note
+    note_path = write_source_note(
+        operator_dir, library_path, selected_files, args.title,
+        total_chars=len(content),
+        is_whole_library=is_whole_library,
+    )
+    print(f"  Source note: {note_path}")
+    print()
+    print("WORLD.md does not expose the source path or file names.")
+    print(
+        "Source provenance is recorded in "
+        f"operator/{note_path.name}."
+    )
+
+
+if __name__ == "__main__":
+    main()
 
     run_path = Path(args.run).resolve()
 

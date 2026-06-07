@@ -29,7 +29,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/detached-neutral-agent-view] ✅
              │
-             ├──► [feature/world-fragment-builder] ← You are here
+             ├──► [feature/world-fragment-builder] ✅
+             │
+             ├──► [feature/a2-preparation-ergonomics] ← You are here
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
              │

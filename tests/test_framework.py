@@ -870,6 +870,7 @@ from scripts.build_world_fragment import (
     write_source_note,
     resolve_safe,
     validate_a2_run,
+    list_library_files,
 )
 
 
@@ -953,6 +954,42 @@ def test_validate_a2_run_rejects_standard_growth():
         )
         with pytest.raises(SystemExit):
             validate_a2_run(run)
+
+
+def test_list_library_files_discovers_md_and_txt():
+    """list_library_files finds .md and .txt recursively, sorted."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "a.md").write_text("a", encoding="utf-8")
+        (lib / "sub").mkdir()
+        (lib / "sub" / "b.txt").write_text("b", encoding="utf-8")
+        (lib / "c.py").write_text("c", encoding="utf-8")  # ignored
+
+        files = list_library_files(str(lib))
+        assert files[0] == "a.md"
+        assert "b.txt" in files[1]
+
+
+def test_list_library_files_empty():
+    """list_library_files returns empty for dir with no .md/.txt."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "notes.py").write_text("code", encoding="utf-8")
+        assert list_library_files(str(lib)) == []
+
+
+def test_write_source_note_whole_library():
+    """WORLD_SOURCE_NOTE records whole-library mode."""
+    with tempfile.TemporaryDirectory() as tmp:
+        op = Path(tmp)
+        note = write_source_note(
+            op, "/fake/lib", ["a.md", "b.md"], "World",
+            total_chars=5000, is_whole_library=True,
+        )
+        content = note.read_text(encoding="utf-8")
+        assert "whole-library" in content
+        assert "Files included: 2" in content
+        assert "Total characters: 5000" in content
 
 
 # ============================================================================
