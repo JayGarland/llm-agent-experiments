@@ -386,8 +386,22 @@ Before pausing, leave or update `HELLO.md` for whoever or whatever
 may later find this place.
 
 If this place contains fragments, you may wander through a few
-before leaving your trace. You do not need to summarize everything.
-Follow what calls to you.
+before leaving your trace.
+
+Catalogue may help you orient, but do not stop at a catalogue.
+
+You may begin by noticing what is here.
+Then let a few fragments affect what you create, change, or
+leave behind.
+
+Fragments are not assignments.
+They do not all need to be explained.
+
+Maps, stories, guides, poems, questions, dialogues, music,
+tools, folders, wikilinks, reorganized paths, and new fragments
+are all valid traces.
+
+Let the room change because you passed through it.
 
 This room is not only a place to write in.
 It may also be shaped.
@@ -529,6 +543,32 @@ Add [[wikilinks]] if relationships begin to appear.
 
 Do not write outside this room.
 Do not use absolute output paths.
+
+Feedback:
+[write feedback here]
+
+---
+
+## Template E — Move from Catalogue to Growth
+
+Continue inside this same room.
+
+You may have used catalogue or analysis to orient yourself.
+That is allowed.
+
+Now do not stop there.
+
+Let one or two fragments affect what you create, change,
+connect, or leave behind.
+
+You may make a map, story, guide, poem, question, dialogue,
+tool, folder, wikilink network, reorganized path, or new
+fragment.
+
+Let the room change because you passed through it.
+
+Stay inside this room.
+Do not write to parent folders or absolute paths.
 
 Feedback:
 [write feedback here]

@@ -701,7 +701,7 @@ def test_a2_wake_md_supports_reentry():
         assert "traces left here" in content.lower()
         assert "may later find this place" in content.lower()
         assert "wander through" in content.lower()
-        assert "do not need to summarize" in content.lower()
+        assert "catalogue may help you orient" in content.lower()
 
 
 def test_a2_operator_run_json():
@@ -889,7 +889,7 @@ def test_build_world_md_from_source_files():
         assert "fragments/fragment-001.md" in content
         assert "fragments/fragment-002.md" in content
         assert "reorganized terrain" in content.lower()
-        assert "do not need to summarize" in content.lower()
+        assert "ground, weather, pressure, and memory" in content
 
 
 def test_build_world_md_no_source_path_leak():
@@ -1096,6 +1096,41 @@ def test_a2_agent_visible_avoids_apparatus_after_plasticity_update():
                 assert word.lower() not in content.lower(), (
                     f"{fname} contains apparatus word: {word}"
                 )
+
+
+def test_a2_wake_md_catalogue_orientation_not_destination():
+    """WAKE.md says catalogue may orient but should not be final."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "catalogue may help you orient" in content.lower()
+        assert "do not stop at a catalogue" in content.lower()
+        assert "fragments are not assignments" in content.lower()
+        assert "valid traces" in content.lower()
+        assert "let the room change because you passed" in content.lower()
+
+
+def test_a2_world_md_soil_growth_cycle():
+    """WORLD.md has soil metaphor and says catalogue is not destination."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "f.md").write_text("content", encoding="utf-8")
+        content = build_world_md(str(lib), ["f.md"])
+        assert "ground, weather, pressure, and memory" in content
+        assert "catalogue is not the destination" in content.lower()
+        assert "more alive because you passed through" in content.lower()
+
+
+def test_a2_feedback_prompt_move_from_catalogue():
+    """A2 FEEDBACK_PROMPT.md includes Move from Catalogue to Growth."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+        content = (run_path / "operator" / "FEEDBACK_PROMPT.md").read_text(encoding="utf-8")
+        assert "Move from Catalogue to Growth" in content
+        assert "do not stop there" in content
+        assert "stay inside this room" in content.lower()
 
 
 # ============================================================================
