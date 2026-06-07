@@ -391,7 +391,7 @@ def test_sandbox_manager_has_no_execution_api():
     mgr = SandboxManager(tempfile.gettempdir())
     public = {name for name in dir(mgr) if not name.startswith("_")}
 
-    allowed = {"root", "create_run", "GROWTH_PACKET_FILES"}
+    allowed = {"root", "create_run", "create_apparatus_minimized_run", "GROWTH_PACKET_FILES"}
     unexpected = public - allowed
 
     # Python built-in dunders that appear on every object
@@ -613,6 +613,148 @@ def test_growth_packet_references_review_loop():
 
         content = (run_path / "GROWTH_PACKET.md").read_text(encoding="utf-8")
         assert "REVIEW_LOOP.md" in content
+
+
+# ============================================================================
+# Apparatus-minimized run tests (feature/apparatus-minimized-layout)
+# ============================================================================
+
+
+def test_standard_run_still_works():
+    """Existing create_run() still produces the standard layout."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        assert (run_path / "instructions.txt").exists()
+        assert (run_path / "GROWTH_PACKET.md").exists()
+        assert (run_path / "run.json").exists()
+        assert not (run_path / "agent_view").exists()
+        assert not (run_path / "operator").exists()
+
+
+def test_a2_run_creates_split_layout():
+    """Apparatus-minimized run creates agent_view/ and operator/."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        agent_view = run_path / "agent_view"
+        operator_dir = run_path / "operator"
+        assert agent_view.exists() and agent_view.is_dir()
+        assert operator_dir.exists() and operator_dir.is_dir()
+
+
+def test_a2_wake_md_exists():
+    """agent_view/WAKE.md exists in A2 runs."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        wake = run_path / "agent_view" / "WAKE.md"
+        assert wake.exists()
+        content = wake.read_text(encoding="utf-8")
+        assert "You wake inside a world fragment" in content
+
+
+def test_a2_world_md_no_apparatus_language():
+    """WORLD.md exists and does not expose apparatus words."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        world = run_path / "agent_view" / "WORLD.md"
+        assert world.exists()
+        content = world.read_text(encoding="utf-8")
+        assert "World Fragment" in content
+        forbidden = ["operator", "source/library", "experiment",
+                     "framework", "apparatus", "review loop"]
+        for word in forbidden:
+            assert word.lower() not in content.lower(), (
+                f"WORLD.md contains apparatus word: {word}"
+            )
+
+
+def test_a2_wake_md_no_apparatus_language():
+    """WAKE.md does not expose apparatus words."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        forbidden = ["experiment", "framework", "source/library",
+                     "source path", "operator", "review loop", "run.json"]
+        for word in forbidden:
+            assert word.lower() not in content.lower(), (
+                f"WAKE.md contains apparatus word: {word}"
+            )
+
+
+def test_a2_wake_md_supports_reentry():
+    """WAKE.md supports participant re-entry by mentioning existing traces/HELLO.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "HELLO.md" in content
+        assert "traces left here" in content.lower()
+        assert "may later find this place" in content.lower()
+
+
+def test_a2_operator_run_json():
+    """operator/run.json records mode and paths."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        meta_file = run_path / "operator" / "run.json"
+        assert meta_file.exists()
+        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+        assert meta["mode"] == "apparatus-minimized"
+        assert meta["apparatus_visibility"] == "A2-apparatus-minimized"
+        assert "agent_view_path" in meta
+        assert "operator_path" in meta
+        assert "read_only_library_path" in meta
+
+
+def test_a2_condition_set_records_a2():
+    """operator/CONDITION_SET.md records A2 apparatus-minimized."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "operator" / "CONDITION_SET.md").read_text(encoding="utf-8")
+        assert "A2" in content
+        assert "apparatus-minimized" in content
+
+
+def test_a2_feedback_prompt_no_apparatus_words():
+    """A2 FEEDBACK_PROMPT.md avoids apparatus language in agent-facing prompts."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "operator" / "FEEDBACK_PROMPT.md").read_text(encoding="utf-8")
+        # Must have the three templates
+        assert "Continue in Same World" in content
+        assert "World Fragment Updated" in content
+        assert "Correct Apparatus Drift" in content
+        # Must NOT have standard-run apparatus language in templates
+        assert "source/library" not in content
+        assert "experiment" not in content
+
+
+def test_a2_operator_files_exist():
+    """All operator-side files are seeded."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        operator_dir = run_path / "operator"
+        for fname in ["run.json", "REVIEW_LOOP.md", "OPERATOR_REVIEW.md",
+                       "FEEDBACK_PROMPT.md", "CONTINUITY_NOTES.md", "CONDITION_SET.md"]:
+            assert (operator_dir / fname).exists(), f"Missing: {fname}"
 
 
 # ============================================================================
