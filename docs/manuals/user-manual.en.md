@@ -218,42 +218,30 @@ the world fragment. Standard growth runs (A0) remain valid contrast conditions.
 
 ### A2 Quick Start
 
-**One-command flow (recommended):**
+**Recommended command:**
 
 ```powershell
 python scripts/prepare_manual_run.py ^
   --mode apparatus-minimized ^
   --library-path "F:\Path\To\ExternalSubLLMWiki" ^
-  --world-files "index.md" "overview.md" ^
-  --export-target "C:\Worlds\room-001"
+  --export
 ```
 
-This creates the run, builds WORLD.md from the selected source files,
-and exports the agent view to a neutral detached folder — all in one command.
+This single command: creates the A2 run, builds WORLD.md from the **whole**
+source library (all .md/.txt files), and exports agent_view/ to an auto-generated
+neutral room under `C:\Worlds\room-YYYYMMDD-HHMMSS-xxxxxx`.
 
-**Step-by-step flow:**
+**Precision mode** (select specific files):
 
-1. **Create the run:**
+```powershell
+python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "..." --world-files "index.md" "overview.md" --export
+```
 
-   ```powershell
-   python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "F:\Path\To\ExternalSubLLMWiki"
-   ```
+**Custom worlds root:**
 
-2. **Build WORLD.md from source files:**
-
-   ```powershell
-   python scripts/build_world_fragment.py --run "sandbox\run-..." --files "index.md" "overview.md"
-   ```
-
-   The source path is never exposed in WORLD.md. It uses neutral `Fragment 1`, `Fragment 2` labels. Source provenance is recorded in `operator/WORLD_SOURCE_NOTE.md`.
-
-   To rebuild after source changes: add `--overwrite`.
-
-3. **(Optional) Export to neutral folder:**
-
-   ```powershell
-   python scripts/export_agent_view.py --run "sandbox\run-..." --target "C:\Worlds\room-001"
-   ```
+```powershell
+python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "..." --export --worlds-root "D:\Worlds"
+```
 
 **Layout:**
 
