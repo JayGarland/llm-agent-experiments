@@ -108,6 +108,18 @@ def main() -> None:
         action="store_true",
         help="Overwrite existing export target when using --export-target.",
     )
+    parser.add_argument(
+        "--computer-root",
+        type=str,
+        action="append",
+        default=None,
+        help=(
+            "Designate a read-only local root for the L1 computer surface. "
+            "May be specified multiple times. Only valid with --mode apparatus-minimized. "
+            "Agent-visible COMPUTER.md uses neutral labels (Shelf A, Shelf B, ...). "
+            "Real paths are recorded only in operator/COMPUTER_SOURCE_NOTE.md."
+        ),
+    )
     args = parser.parse_args()
 
     # Validate incompatible args
@@ -115,6 +127,8 @@ def main() -> None:
         sys.exit("Error: --world-files requires --mode apparatus-minimized.")
     if (args.export_target or args.export) and args.mode != "apparatus-minimized":
         sys.exit("Error: --export / --export-target require --mode apparatus-minimized.")
+    if args.computer_root is not None and args.mode != "apparatus-minimized":
+        sys.exit("Error: --computer-root requires --mode apparatus-minimized.")
     if args.export_target and args.worlds_root:
         print("Warning: --export-target overrides --worlds-root. Ignoring --worlds-root.")
     if args.export and args.export_target:
@@ -131,7 +145,9 @@ def main() -> None:
         import secrets
         from datetime import datetime
 
-        run_path = manager.create_apparatus_minimized_run()
+        run_path = manager.create_apparatus_minimized_run(
+            computer_roots=args.computer_root
+        )
         agent_view = run_path / "agent_view"
         operator_dir = run_path / "operator"
         library = args.library_path or str(READ_ONLY_LIBRARY_PATH)
@@ -214,6 +230,8 @@ def main() -> None:
         print(f"  Run directory:  {run_path}")
         print(f"  Agent view:     {agent_view}")
         print(f"  Operator dir:   {operator_dir}")
+        if args.computer_root:
+            print(f"  Computer surface: {len(args.computer_root)} shelf(ves) in agent_view/COMPUTER.md")
         if launch_path != agent_view:
             print(f"  Detached room:  {launch_path}")
         print()

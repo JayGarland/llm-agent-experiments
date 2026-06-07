@@ -961,6 +961,126 @@ def test_a2_upgrade_does_not_break_default():
         assert not (run_path / "weather").exists()
 
 
+# ============================================================================
+# L1 Computer Surface tests (feature/l1-read-only-local-scout)
+# ============================================================================
+
+
+def test_l1_with_computer_roots_creates_computer_md():
+    """With --computer-root, COMPUTER.md is generated in agent_view with real paths."""
+    with tempfile.TemporaryDirectory() as tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        mgr = SandboxManager(tmp)
+        real_path = str(Path(lib_tmp).resolve())
+        run_path = mgr.create_apparatus_minimized_run(
+            computer_roots=[real_path]
+        )
+
+        computer_md = run_path / "agent_view" / "COMPUTER.md"
+        assert computer_md.exists()
+        content = computer_md.read_text(encoding="utf-8")
+        assert "Computer" in content
+        assert "read-only" in content.lower()
+        assert real_path in content
+
+
+def test_l1_computer_md_has_boundary_language():
+    """COMPUTER.md includes read-only boundary and room-only write rules."""
+    with tempfile.TemporaryDirectory() as tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        mgr = SandboxManager(tmp)
+        real_path = str(Path(lib_tmp).resolve())
+        run_path = mgr.create_apparatus_minimized_run(
+            computer_roots=[real_path]
+        )
+
+        content = (run_path / "agent_view" / "COMPUTER.md").read_text(encoding="utf-8")
+        assert real_path in content
+        assert "You must not" in content
+        assert "write to these paths" in content.lower()
+        assert "All creation" in content
+        assert "belong inside this room" in content.lower()
+        assert "Do not spend all your attention explaining the computer" in content
+
+
+def test_l1_computer_source_note_has_real_paths():
+    """operator/COMPUTER_SOURCE_NOTE.md maps labels to real paths."""
+    with tempfile.TemporaryDirectory() as tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        mgr = SandboxManager(tmp)
+        real_path = str(Path(lib_tmp).resolve())
+        run_path = mgr.create_apparatus_minimized_run(
+            computer_roots=[real_path]
+        )
+
+        note = run_path / "operator" / "COMPUTER_SOURCE_NOTE.md"
+        assert note.exists()
+        content = note.read_text(encoding="utf-8")
+        assert "Shelf A" in content
+        assert real_path in content
+        assert "operator" in content.lower()
+        assert "read-only" in content.lower()
+
+
+def test_l1_run_json_records_computer_roots():
+    """operator/run.json records computer_roots metadata."""
+    with tempfile.TemporaryDirectory() as tmp, \
+         tempfile.TemporaryDirectory() as lib_tmp:
+        mgr = SandboxManager(tmp)
+        real_path = str(Path(lib_tmp).resolve())
+        run_path = mgr.create_apparatus_minimized_run(
+            computer_roots=[real_path]
+        )
+
+        meta = json.loads(
+            (run_path / "operator" / "run.json").read_text(encoding="utf-8")
+        )
+        assert "computer_roots" in meta
+        assert len(meta["computer_roots"]) == 1
+        assert meta["computer_roots"][0]["label"] == "Shelf A"
+        assert meta["computer_roots"][0]["path"] == real_path
+
+
+def test_l1_multiple_roots_in_computer_md():
+    """Multiple --computer-root generates multiple paths in COMPUTER.md."""
+    with tempfile.TemporaryDirectory() as tmp, \
+         tempfile.TemporaryDirectory() as a, \
+         tempfile.TemporaryDirectory() as b:
+        mgr = SandboxManager(tmp)
+        r1 = str(Path(a).resolve())
+        r2 = str(Path(b).resolve())
+        run_path = mgr.create_apparatus_minimized_run(
+            computer_roots=[r1, r2]
+        )
+
+        content = (run_path / "agent_view" / "COMPUTER.md").read_text(encoding="utf-8")
+        assert r1 in content
+        assert r2 in content
+        assert "outside surface" in content.lower()
+
+
+def test_l1_without_computer_roots_no_computer_md():
+    """Without --computer-root, no COMPUTER.md is generated."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        assert not (run_path / "agent_view" / "COMPUTER.md").exists()
+        assert not (run_path / "operator" / "COMPUTER_SOURCE_NOTE.md").exists()
+
+
+def test_l1_does_not_break_a2_run():
+    """Existing A2 create_apparatus_minimized_run() still works."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        assert (run_path / "agent_view" / "WAKE.md").exists()
+        assert (run_path / "agent_view" / "WORLD.md").exists()
+        assert (run_path / "operator" / "run.json").exists()
+        assert not (run_path / "agent_view" / "COMPUTER.md").exists()
+
+
 def test_path_hygiene_warns_on_apparatus_terms():
     """Path hygiene check flags apparatus-like terms."""
     warnings = _check_path_hygiene(Path("C:/GitHub/experiment/test"))
