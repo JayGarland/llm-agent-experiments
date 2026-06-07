@@ -123,7 +123,7 @@ def build_world_md(
         f"# {title}\n\n"
         "You are inside a world made of fragments.\n\n"
         "The fragments are not assignments.\n"
-        "They are the ground, weather, pressure, and memory of this place.\n\n"
+        "They are the ground, texture, pressure, and memory of this place.\n\n"
         "The fragments are not fixed exhibits.\n"
         "They may become paths, clusters, maps, songs, tools,\n"
         "folders, or rooms within the room.\n\n"

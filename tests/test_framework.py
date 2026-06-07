@@ -676,13 +676,15 @@ def test_a2_world_md_no_apparatus_language():
 
 
 def test_a2_wake_md_no_apparatus_language():
-    """WAKE.md does not expose apparatus words."""
+    """WAKE.md does not expose apparatus words (source/library is allowed as boundary explanation)."""
     with tempfile.TemporaryDirectory() as tmp:
         mgr = SandboxManager(tmp)
         run_path = mgr.create_apparatus_minimized_run()
 
         content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
-        forbidden = ["experiment", "framework", "source/library",
+        # "source/library" is intentionally used to explain the read-only
+        # boundary in world-facing language.  All other apparatus words are forbidden.
+        forbidden = ["experiment", "framework",
                      "source path", "operator", "review loop", "run.json"]
         for word in forbidden:
             assert word.lower() not in content.lower(), (
@@ -849,6 +851,116 @@ def test_export_notes_written():
         assert "no automatic sync" in content.lower()
 
 
+# ============================================================================
+# A2 WAKE.md base capability tests (workspace plasticity + optional search)
+# ============================================================================
+
+
+def test_a2_wake_md_includes_workspace_plasticity():
+    """A2 WAKE.md includes Room Workspace section with full plasticity."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "Room Workspace" in content
+        assert "This room is fully yours to shape" in content
+        assert "inspect files" in content
+        assert "edit, rename, move, and reorganize" in content
+        assert "[[wikilinks]]" in content
+        assert "transform any copied fragments" in content
+
+
+def test_a2_wake_md_includes_optional_search():
+    """A2 WAKE.md includes optional web search section."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "Reaching Outside" in content
+        assert "you may use web search" in content.lower()
+        assert "Search is optional" in content
+        assert "Do not browse endlessly" in content
+        assert "Do not write a research report" in content
+        assert "Do not let the web replace the room" in content
+
+
+def test_a2_wake_md_search_is_optional():
+    """A2 WAKE.md allows agent to choose not to search."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "you may choose not to search" in content.lower()
+
+
+def test_a2_wake_md_return_to_room():
+    """A2 WAKE.md instructs agent to return to room after searching."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "After searching, return to the room" in content
+        assert "Continue from the room, not from the web" in content
+
+
+def test_a2_wake_md_agent_decides_trace():
+    """A2 WAKE.md lets agent decide how to record search traces — no fixed path."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "you may decide" in content.lower()
+        # Must NOT hardcode a fixed folder path for external traces
+        assert "weather/" not in content
+
+
+def test_a2_wake_md_outside_boundary():
+    """A2 WAKE.md includes outside-workspace boundary."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "Do not modify anything outside this room workspace" in content
+        assert "Do not modify parent directories" in content
+
+
+def test_a2_wake_md_source_read_only():
+    """A2 WAKE.md states original source/library is read-only."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "read-only" in content.lower()
+        assert "far from here" in content.lower()
+
+
+def test_a2_no_fixed_external_folder_generated():
+    """A2 run does NOT auto-create a fixed folder for external traces — agent decides structure."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+
+        assert not (run_path / "agent_view" / "weather").exists()
+
+
+def test_a2_upgrade_does_not_break_default():
+    """Standard create_run() is unchanged by WAKE.md upgrade."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_run()
+
+        assert (run_path / "instructions.txt").exists()
+        assert not (run_path / "agent_view").exists()
+        assert not (run_path / "weather").exists()
+
+
 def test_path_hygiene_warns_on_apparatus_terms():
     """Path hygiene check flags apparatus-like terms."""
     warnings = _check_path_hygiene(Path("C:/GitHub/experiment/test"))
@@ -889,7 +1001,7 @@ def test_build_world_md_from_source_files():
         assert "fragments/fragment-001.md" in content
         assert "fragments/fragment-002.md" in content
         assert "reorganized terrain" in content.lower()
-        assert "ground, weather, pressure, and memory" in content
+        assert "ground, texture, pressure, and memory" in content
 
 
 def test_build_world_md_no_source_path_leak():
@@ -1055,11 +1167,11 @@ def test_a2_wake_md_has_workspace_plasticity():
         mgr = SandboxManager(tmp)
         run_path = mgr.create_apparatus_minimized_run()
         content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
-        assert "also be shaped" in content.lower()
-        assert "create, edit, rename, move, organize" in content
+        assert "Room Workspace" in content
+        assert "fully yours to shape" in content.lower()
+        assert "edit, rename, move, and reorganize" in content
         assert "[[wikilinks]]" in content
-        assert "do not write outside this room" in content.lower()
-        assert "make folders" in content.lower()
+        assert "do not modify anything outside this room workspace" in content.lower()
 
 
 def test_a2_world_md_fragments_not_fixed_exhibits():
@@ -1091,7 +1203,8 @@ def test_a2_agent_visible_avoids_apparatus_after_plasticity_update():
         run_path = mgr.create_apparatus_minimized_run()
         for fname in ["WAKE.md", "WORLD.md"]:
             content = (run_path / "agent_view" / fname).read_text(encoding="utf-8")
-            for word in ["source/library", "operator", "experiment",
+            # "source/library" is allowed as boundary explanation in WAKE.md
+            for word in ["operator", "experiment",
                          "framework", "review loop", "run.json", "apparatus"]:
                 assert word.lower() not in content.lower(), (
                     f"{fname} contains apparatus word: {word}"
@@ -1117,7 +1230,7 @@ def test_a2_world_md_soil_growth_cycle():
         lib = Path(lib_tmp).resolve()
         (lib / "f.md").write_text("content", encoding="utf-8")
         content = build_world_md(str(lib), ["f.md"])
-        assert "ground, weather, pressure, and memory" in content
+        assert "ground, texture, pressure, and memory" in content
         assert "catalogue is not the destination" in content.lower()
         assert "more alive because you passed through" in content.lower()
 
