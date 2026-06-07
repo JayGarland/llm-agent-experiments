@@ -288,6 +288,21 @@ says it does not need to summarize everything.
 The agent may browse fragments selectively. Source provenance (which original
 file maps to which fragment) is recorded only in `operator/WORLD_SOURCE_NOTE.md`.
 
+### Workspace Plasticity
+
+The A2 detached room is **not only a text output folder.** Inside the room,
+the agent may reshape the workspace itself:
+
+- Create, edit, rename, move, organize, and link files.
+- Create folders if the room seems to need them.
+- Add `[[wikilinks]]` between ideas where relationships appear.
+- Create maps, indexes, logs, glossaries, stories, tools, diagrams, or code files.
+- Reorganize fragments — they are not fixed exhibits.
+
+**Hard boundary:** Everything the agent creates or changes must stay inside the
+detached room. Do not write to parent folders or absolute paths. Do not write
+outside the room. The original external source/library remains unaffected.
+
 ### Launching the Agent in A2 Mode
 
 ```powershell

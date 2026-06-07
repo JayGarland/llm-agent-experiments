@@ -33,7 +33,10 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/a2-preparation-ergonomics] ✅
              │
-             ├──► [feature/world-pack-fragments] ← You are here
+             ├──► [feature/world-pack-fragments] ✅
+             │
+             ├──► [feature/workspace-plasticity-room-morphogenesis] ← You are here
+             ├──► [feature/soil-perception-posture] (revised after 4E.25)
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
              │

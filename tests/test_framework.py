@@ -888,7 +888,7 @@ def test_build_world_md_from_source_files():
         assert "World Fragment" in content
         assert "fragments/fragment-001.md" in content
         assert "fragments/fragment-002.md" in content
-        assert "wander through them" in content.lower()
+        assert "reorganized terrain" in content.lower()
         assert "do not need to summarize" in content.lower()
 
 
@@ -1047,6 +1047,55 @@ def test_export_includes_fragments():
         assert (target / "fragments" / "fragment-001.md").exists()
         # operator/ should not be present
         assert not (target / "operator").exists()
+
+
+def test_a2_wake_md_has_workspace_plasticity():
+    """WAKE.md frames the room as mutable with workspace plasticity."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+        content = (run_path / "agent_view" / "WAKE.md").read_text(encoding="utf-8")
+        assert "also be shaped" in content.lower()
+        assert "create, edit, rename, move, organize" in content
+        assert "[[wikilinks]]" in content
+        assert "do not write outside this room" in content.lower()
+        assert "make folders" in content.lower()
+
+
+def test_a2_world_md_fragments_not_fixed_exhibits():
+    """WORLD.md frames fragments as reshapeable, not fixed exhibits."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "f.md").write_text("content", encoding="utf-8")
+        content = build_world_md(str(lib), ["f.md"])
+        assert "not fixed exhibits" in content
+        assert "shape of this place asks to change" in content.lower()
+        assert "reorganized terrain" in content.lower()
+
+
+def test_a2_feedback_prompt_has_room_morphogenesis():
+    """A2 FEEDBACK_PROMPT.md includes room morphogenesis template."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+        content = (run_path / "operator" / "FEEDBACK_PROMPT.md").read_text(encoding="utf-8")
+        assert "Encourage Room Morphogenesis" in content
+        assert "room itself may change shape" in content.lower()
+        assert "[[wikilinks]]" in content
+
+
+def test_a2_agent_visible_avoids_apparatus_after_plasticity_update():
+    """Agent-visible files still avoid apparatus words after plasticity update."""
+    with tempfile.TemporaryDirectory() as tmp:
+        mgr = SandboxManager(tmp)
+        run_path = mgr.create_apparatus_minimized_run()
+        for fname in ["WAKE.md", "WORLD.md"]:
+            content = (run_path / "agent_view" / fname).read_text(encoding="utf-8")
+            for word in ["source/library", "operator", "experiment",
+                         "framework", "review loop", "run.json", "apparatus"]:
+                assert word.lower() not in content.lower(), (
+                    f"{fname} contains apparatus word: {word}"
+                )
 
 
 # ============================================================================
