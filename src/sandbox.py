@@ -451,6 +451,72 @@ Continue from the room, not from the web.
 """
 
 
+_COMPUTER_MD = """\
+# Computer
+
+There is a read-only computer surface available from this room.
+
+This computer is an outside surface, not the room itself.
+It may contain source material, traces, prior work, fragments,
+or signs left by other instances or operators.
+
+You may inspect the designated paths below if they help the room
+continue growing:
+
+{computer_roots}
+
+## How to use this computer
+
+You may:
+
+- read files;
+- search within the designated paths;
+- compare materials;
+- bring useful discoveries back into the room;
+- create new notes, experiments, maps, logs, or artifacts inside the room.
+
+You must not:
+
+- write to these paths;
+- rename files or folders there;
+- delete anything there;
+- move anything there;
+- edit or modify anything there;
+- treat the computer as your writable workspace.
+
+All creation, notes, experiments, and traces belong inside this room.
+
+## Orientation
+
+Do not spend all your attention explaining the computer, the path names,
+or the apparatus.
+
+Use the computer as a source of outside novelty, resistance, memory,
+and unfinished traces.
+
+If something outside is useful, transform it into something new here.
+
+If the computer becomes distracting, return to the room.
+"""
+
+
+_COMPUTER_SOURCE_NOTE = """\
+# Computer Source Note
+
+This file is operator-facing only.
+
+The agent-visible COMPUTER.md uses neutral labels.
+
+## Shelves
+
+{shelves}
+
+These roots are intended to be read-only.
+
+After an L1 run, verify that these external roots were not modified.
+"""
+
+
 _WORLD_MD = """\
 # World Fragment
 
@@ -686,12 +752,19 @@ class SandboxManager:
 
         return run_path
 
-    def create_apparatus_minimized_run(self) -> Path:
+    def create_apparatus_minimized_run(
+        self, computer_roots: list[str] | None = None
+    ) -> Path:
         """
         Create an apparatus-minimized (A2) run directory with a split layout:
 
             agent_view/   — agent-visible world surface (WAKE.md, WORLD.md)
             operator/     — operator-side apparatus files
+
+        If *computer_roots* is provided (L1 condition), also seeds:
+
+            agent_view/COMPUTER.md   — neutral-label read-only computer surface
+            operator/COMPUTER_SOURCE_NOTE.md  — real-path-to-label mapping
 
         The agent should be opened in ``agent_view/`` only.
         The operator manages the run from ``operator/``.
@@ -710,6 +783,9 @@ class SandboxManager:
         self._seed_agent_view(agent_view)
         self._seed_operator_dir(operator_dir)
         self._write_a2_metadata(operator_dir, run_name, agent_view)
+
+        if computer_roots:
+            self._seed_computer_surface(agent_view, operator_dir, computer_roots)
 
         return run_path
 
@@ -804,5 +880,47 @@ class SandboxManager:
         }
         meta_file = operator_dir / "run.json"
         meta_file.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+
+    def _seed_computer_surface(
+        self,
+        agent_view: Path,
+        operator_dir: Path,
+        computer_roots: list[str],
+    ) -> None:
+        """Write COMPUTER.md and COMPUTER_SOURCE_NOTE.md for L1 computer surface."""
+        resolved = [str(Path(r).resolve()) for r in computer_roots]
+        labels = [f"Shelf {chr(65 + i)}" for i in range(len(resolved))]
+
+        # Agent-visible: real designated paths
+        path_list = "\n".join(f"- {path}" for path in resolved)
+        (agent_view / "COMPUTER.md").write_text(
+            _COMPUTER_MD.format(computer_roots=path_list),
+            encoding="utf-8",
+        )
+
+        # Operator-side: label-to-real-path mapping
+        shelf_lines = "\n".join(
+            f"- {label} -> {path}" for label, path in zip(labels, resolved)
+        )
+        (operator_dir / "COMPUTER_SOURCE_NOTE.md").write_text(
+            _COMPUTER_SOURCE_NOTE.format(shelves=shelf_lines),
+            encoding="utf-8",
+        )
+
+        # Update operator/run.json with computer roots metadata
+        self._update_run_json_with_computer_roots(operator_dir, labels, resolved)
+
+    def _update_run_json_with_computer_roots(
+        self, operator_dir: Path, labels: list[str], paths: list[str]
+    ) -> None:
+        """Add computer_roots to existing run.json metadata."""
+        run_json = operator_dir / "run.json"
+        if run_json.exists():
+            meta = json.loads(run_json.read_text(encoding="utf-8"))
+            meta["computer_roots"] = [
+                {"label": label, "path": path}
+                for label, path in zip(labels, paths)
+            ]
+            run_json.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
 
