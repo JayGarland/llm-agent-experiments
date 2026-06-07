@@ -74,3 +74,7 @@ For the apparatus visibility model (how much of the experiment framework the age
 
 For the Phase 4 A2 validation evidence and current main path decision, see:
 - [Phase 4G A2 Comparison / Validation Packet](validation/phase-4g-a2-comparison-validation.md)
+
+For Phase 5 — continuity, search, and local scout contrast conditions — see:
+- [Phase 5 docs](phase5/)
+- [User Manual §6 — Base A2 Capabilities](manuals/user-manual.en.md)

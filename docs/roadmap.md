@@ -47,8 +47,11 @@ clean, task-specific feature branches derived from `base`.
              ├──► [docs/phase5s1-search-weather-validation] ✅
              ├──► [docs/phase5s1.2-agent-initiated-search] ✅
              │
-             ├──► [feat/s1.2-base-capability-upgrade] ← You are here
+             ├──► [feat/s1.2-base-capability-upgrade] ✅
              │     (workspace plasticity + optional search absorbed into A2 WAKE.md)
+             │
+             ├──► [feature/l1-read-only-local-scout] ← You are here
+             │     (--computer-root, COMPUTER.md, validation 001A)
              │
              ├──► [feature/condition-observation-registry]   ← future
              ├──► [experiment/branching-growth-search]        ← future
@@ -137,6 +140,15 @@ base A2 `_WAKE_MD`. All A2 detached rooms now include:
 No separate S1.2 mode. No `weather/` folder. No canonical weather language.
 See `docs/manuals/user-manual.en.md` §6 "Base A2 Capabilities".
 
+### Phase 5L1 — Read-Only Computer Surface ✅
+
+Implemented MVP: `--computer-root` CLI option generates `agent_view/COMPUTER.md`
+with real designated read-only paths. Agent may browse local filesystem roots.
+Room remains the only writable workspace.
+
+See `docs/phase5/l1-read-only-computer-surface.md` (design) and
+`docs/phase5/l1-validation-001a-computer-surface-observation.md` (validation).
+
 ---
 
 ## Part 3: Future Directions
@@ -154,7 +166,7 @@ Future experimental conditions (see `docs/phase5/multi-cycle-continuity-validati
 |---|---|---|
 | N0 | No-source Version A contrast | Not started |
 | S1 | Search-enabled exploratory room | S1.1 validated; S1.2 absorbed into A2 base |
-| L1 | Read-only local scout extension | Not started |
+| L1 | Read-only local scout extension | ✅ Implemented (Slice 1A + 1B) — `--computer-root` + `COMPUTER.md` |
 | M1 | Multi-agent / social-room contrast | Not started |
 | F1 | Fish-A/Fish-B explicit-other contrast | Not started |
 

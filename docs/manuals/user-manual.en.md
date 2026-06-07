@@ -430,6 +430,33 @@ assignment, not permission to browse endlessly.
 No fixed folder or search-note convention is generated.
 The agent decides its own conventions.
 
+#### Read-Only Computer Surface (L1)
+
+The agent may have access to a read-only local computer surface — designated
+external folders the operator marks as readable via `--computer-root`.
+
+```powershell
+python scripts/prepare_manual_run.py ^
+  --mode apparatus-minimized ^
+  --library-path "F:\Path\To\SourceWiki" ^
+  --computer-root "F:\Path\To\ReadableFolderA" ^
+  --computer-root "F:\Path\To\ReadableFolderB" ^
+  --export
+```
+
+This generates `agent_view/COMPUTER.md` listing the real designated paths
+with read-only boundary rules:
+
+- You may read files, search within designated paths, compare materials.
+- You must not write, rename, delete, move, or modify anything there.
+- All creation belongs inside the room.
+- The computer is an outside surface — use it for novelty, resistance,
+  memory, and traces. If it becomes distracting, return to the room.
+
+Without `--computer-root`, no COMPUTER.md is generated. L1 is optional.
+`--library-path` (source-as-soil) and `--computer-root` (L1) are separate,
+additive inputs — they do not replace each other.
+
 ### A2.1 — Detached Neutral Agent View
 
 #### Why Detach

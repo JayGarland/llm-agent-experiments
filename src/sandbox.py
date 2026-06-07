@@ -486,6 +486,25 @@ You must not:
 
 All creation, notes, experiments, and traces belong inside this room.
 
+## Returning from the computer
+
+Reading is not the goal.
+
+If you inspect the computer, do not merely consume it.
+Let something return to the room:
+
+- a pressure;
+- a question;
+- an image;
+- a contradiction;
+- a small trace;
+- a new relation;
+- or even a deliberate silence.
+
+You do not need to summarize what you read.
+You do not need to produce a large artifact.
+But if the computer changes your attention, leave that change somewhere inside the room.
+
 ## Orientation
 
 Do not spend all your attention explaining the computer, the path names,
