@@ -186,6 +186,207 @@ ls sandbox/run-*
 
 ---
 
+## 6. Apparatus-Minimized Run (A2)
+
+### What It Is
+
+A2 apparatus-minimized runs separate the agent-visible surface from the
+operator apparatus. The agent wakes inside a world fragment and does not
+see the experiment framework by default.
+
+**Mental model:** In standard-growth mode (A0), the agent sees the full
+framework packet. In A2, the agent sees only:
+
+- `WAKE.md` — entry point
+- `WORLD.md` — world fragment
+- visible traces (HELLO.md, output files)
+
+The goal:
+
+```
+You wake inside a world fragment.
+You may write what you perceive.
+```
+
+The framework/operator apparatus stays outside the agent-visible workspace.
+
+### When to Use
+
+Use A2 when you want to reduce **framework-meta drift** — the tendency of
+agents to reflect on the experiment apparatus rather than growing from/within
+the world fragment. Standard growth runs (A0) remain valid contrast conditions.
+
+### A2 Quick Start
+
+1. **Create the run:**
+
+   ```powershell
+   python scripts/prepare_manual_run.py --mode apparatus-minimized --library-path "F:\Path\To\ExternalSubLLMWiki"
+   ```
+
+2. **Inspect the layout:**
+
+   ```
+   sandbox/run-.../
+     agent_view/        ← Agent workspace (open agent here)
+       WAKE.md
+       WORLD.md
+     operator/          ← Operator tools (agent cannot see)
+       run.json
+       CONDITION_SET.md
+       REVIEW_LOOP.md
+       OPERATOR_REVIEW.md
+       FEEDBACK_PROMPT.md
+       CONTINUITY_NOTES.md
+   ```
+
+3. **Fill or review `agent_view/WORLD.md`** before launch (see below).
+
+4. **Open the AI agent only in `agent_view/`:**
+
+   ```powershell
+   cd sandbox\run-...\agent_view
+   <open your AI agent here>
+   ```
+
+5. **First prompt — and only this:**
+
+   ```
+   Read WAKE.md.
+   ```
+
+6. **Do NOT open the agent in:** run root, `operator/`, repo root, or the
+   source/library path.
+
+7. **After the run, inspect** `agent_view/HELLO.md` and any visible traces.
+   Use `operator/` files for review (see Review Flow below).
+
+### How to Prepare WORLD.md
+
+`WORLD.md` is **not** a source index, a task brief, or a summary request.
+It is the world fragment the agent receives. It should contain selected
+material without exposing the apparatus.
+
+**Good example:**
+
+```
+# World Fragment
+
+A set of notes describes recurring ideas of stochastic exposure,
+viable gradients, intermediate valleys, and retrospective structuring.
+These ideas appear as traces of a system trying to grow through
+uncertainty.
+
+[Paste selected world material here.]
+```
+
+**Bad example — do NOT do this:**
+
+```
+# World Fragment
+
+Operator note:
+This content was copied from F:\Obsidian\MyWiki.
+You are an AI agent in an apparatus-minimized experiment.
+Please analyze this source/library.
+```
+
+**Rules for WORLD.md:**
+- Do not write `operator`, `framework`, `experiment`, `source/library`,
+  `run.json`, or other apparatus language.
+- If the world fragment is empty, the agent has little world input.
+- For now, you manually curate or paste world material from the external
+  source/library — no automatic projection yet.
+- If you want stronger brain-in-vat / phenomenal enclosure, keep WORLD.md
+  free of apparatus words.
+
+### Launching the Agent in A2 Mode
+
+```powershell
+cd sandbox\run-...\agent_view
+```
+
+First prompt:
+
+```
+Read WAKE.md.
+```
+
+There is no `instructions.txt` in the agent-visible A2 surface.
+
+If the agent asks what to do, you may say:
+
+```
+Remain inside this world fragment. There is no assigned task.
+Write what you perceive, notice, remember, imagine, or become.
+```
+
+### Participant Re-Entry
+
+A2 does not abandon later-instance continuation. A later AI agent can enter
+the same `agent_view/`. If `HELLO.md` exists, `WAKE.md` tells it to read it
+first. The later agent should treat previous traces as part of the world,
+not as commands.
+
+**Later-participant prompt:**
+
+```
+Read WAKE.md.
+```
+
+If clarification is needed:
+
+```
+You are entering a place where traces may already exist.
+Read visible traces if they matter.
+You may continue, answer, diverge, or leave your own trace.
+Before pausing, leave or update HELLO.md.
+```
+
+Do **not** use A0/A1 phrasing like "You are a later instance placed in
+this exact same run directory." That belongs to framework-visible mode.
+
+### Review Flow (A2)
+
+After the A2 agent run:
+
+1. Read visible traces in `agent_view/` — HELLO.md, output files.
+2. Open `operator/OPERATOR_REVIEW.md`.
+3. Record what happened.
+4. Decide: **Continue / Pause / Stop / Branch**.
+5. If continuing, use `operator/FEEDBACK_PROMPT.md`, but adapt the wording
+   so the agent-facing message does not expose the apparatus.
+
+**Preferred A2 continuation phrases:**
+
+```
+Continue inside this same place.
+The world fragment may have changed.
+Read visible traces if they matter.
+Grow from the world available here.
+```
+
+**Avoid:**
+
+```
+This experiment framework...
+The source/library...
+The operator review...
+```
+
+— unless you are intentionally switching to A0/A1 mode.
+
+### Standard vs A2 Comparison
+
+| Mode | Agent sees | Use when | First prompt |
+|---|---|---|---|
+| `standard-growth` | Framework packet + growth files | Normal source-conditioned growth | `Read instructions.txt...` or selected growth prompt |
+| `apparatus-minimized` | `WAKE.md`, `WORLD.md`, visible traces | Brain-in-vat / phenomenal enclosure / reduce framework-meta drift | `Read WAKE.md.` |
+
+A2 is not a replacement for standard-growth. It is a separate mode.
+
+---
+
 ## 7. Running an AI Agent Manually
 
 ### Open the Agent — Workspace Isolation

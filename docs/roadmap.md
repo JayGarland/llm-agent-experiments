@@ -23,8 +23,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/review-and-continue-loop] ✅
              │
-             ├──► [docs/apparatus-visibility-model] ← You are here
-             ├──► [feature/apparatus-minimized-layout]
+             ├──► [docs/apparatus-visibility-model] ✅
+             │
+             ├──► [feature/apparatus-minimized-layout] ← You are here
              ├──► [feature/world-fragment-builder]
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
@@ -158,10 +159,18 @@ clean, task-specific feature branches derived from `base`.
   * Updated roadmap with Phase 4C–4G path.
 * **Boundary**: Documentation/design alignment only. No runtime behavior changed. A0/A1 retained as contrast conditions. A2 marked as main next MVP path. A3 marked as future deep direction.
 
-### Phase 4D: Apparatus-Minimized Run Layout MVP (`feature/apparatus-minimized-layout`)
+### Phase 4D: Apparatus-Minimized Run Layout MVP (`feature/apparatus-minimized-layout`) 🔄 *In Progress*
 
-* **Objective**: Implement the A2 run layout — separate `agent_view/` from `operator/` directories. Agent sees only world-facing files.
-* **Boundary**: Layout change only. No harness, no source projection.
+* **Objective**: Implement the A2 run layout — separate `agent_view/` (WAKE.md, WORLD.md) from `operator/` (apparatus files). The agent no longer sees the experiment framework by default.
+* **Deliverables**:
+  * `SandboxManager.create_apparatus_minimized_run()` — New method creating split-layout runs.
+  * `agent_view/WAKE.md` — Minimal wake surface with world-facing language. No apparatus words. Supports participant re-entry.
+  * `agent_view/WORLD.md` — World fragment placeholder for operator curation.
+  * `operator/` — run.json, CONDITION_SET.md, REVIEW_LOOP.md, OPERATOR_REVIEW.md, FEEDBACK_PROMPT.md (A2 version), CONTINUITY_NOTES.md.
+  * `scripts/prepare_manual_run.py --mode apparatus-minimized` — CLI option for A2 runs.
+  * CLI output directs operator to open agent in `agent_view/` only; recommends "Read WAKE.md."
+  * 10 new tests (54 total) covering split layout, WAKE.md apparatus-free language, re-entry support, operator files, and standard run preservation.
+* **Boundary**: Layout and seeding only. No harness, no source projection, no automatic world builder. Standard growth run behavior unchanged.
 
 ### Phase 4E: World Fragment Builder MVP (`feature/world-fragment-builder`)
 
