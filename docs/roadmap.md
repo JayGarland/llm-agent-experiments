@@ -37,11 +37,11 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/workspace-plasticity-room-morphogenesis] ✅
              │
-             ├──► [feature/soil-growth-cycle-posture] ← You are here
-             ├──► [feature/wake-surface]
-             ├──► [experiment/first-a2-comparison-run]
+             ├──► [feature/soil-growth-cycle-posture] ✅
              │
-             ├──► [feature/continuity-v2]
+             ├──► [docs/phase-4g-a2-validation] ← You are here
+             │
+             ├──► [feature/continuity-v2]     ← Phase 5 next
              ├──► [feature/condition-observation-registry]
              │
              └──► [experiment/branching-growth-search]
@@ -218,6 +218,15 @@ clean, task-specific feature branches derived from `base`.
 
 * **Objective**: Run the same source/library through A0 and A2 conditions. Compare output attractors.
 * **Boundary**: Manual experiment. No automated comparison.
+
+### Phase 4G: A2 Comparison / Validation Packet (`docs/phase-4g-a2-validation`) 🔄 *In Progress*
+
+* **Objective**: Record real A2 experiment evidence, compare visibility levels, decide current main path, and close Phase 4E.x line.
+* **Deliverables**: `docs/validation/phase-4g-a2-comparison-validation.md` — 9 validation runs, comparison table (A0/A1/A2.0/A2.1/A3), main path decision, Phase 4 closure decision, Phase 5 readiness assessment, deferred directions.
+* **Key decisions**: A2.1 detached fragmented world accepted as current main path. Phase 4E.x line closed. Phase 5 continuity-v2 is next.
+* **Boundary**: Validation/documentation only. No runtime changes.
+
+> **Phase 4E.x line is closed.** Do not add 4E.x phases. Next is Phase 5 continuity-v2 after Phase 4G acceptance.
 
 ### Phase 10: Continuity v2 (`feature/continuity-v2`)
 

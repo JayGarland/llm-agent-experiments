@@ -71,3 +71,6 @@ For composing experimental prompts from condition modules, see:
 
 For the apparatus visibility model (how much of the experiment framework the agent can see), see:
 - [Apparatus Visibility Model](design/apparatus-visibility-model.md)
+
+For the Phase 4 A2 validation evidence and current main path decision, see:
+- [Phase 4G A2 Comparison / Validation Packet](validation/phase-4g-a2-comparison-validation.md)
