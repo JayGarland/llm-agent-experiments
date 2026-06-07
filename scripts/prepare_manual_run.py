@@ -114,10 +114,9 @@ def main() -> None:
         action="append",
         default=None,
         help=(
-            "Designate a read-only local root for the L1 computer surface. "
-            "May be specified multiple times. Only valid with --mode apparatus-minimized. "
-            "Agent-visible COMPUTER.md uses neutral labels (Shelf A, Shelf B, ...). "
-            "Real paths are recorded only in operator/COMPUTER_SOURCE_NOTE.md."
+            "Add a read-only computer root. Repeatable. "
+            "Agent-visible COMPUTER.md lists the real designated read-only paths. "
+            "The room remains the only writable workspace."
         ),
     )
     args = parser.parse_args()
