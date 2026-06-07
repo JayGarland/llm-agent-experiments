@@ -385,6 +385,62 @@ The operator review...
 
 A2 is not a replacement for standard-growth. It is a separate mode.
 
+### A2.1 — Detached Neutral Agent View
+
+#### Why Detach
+
+Repo-local A2 runs (`sandbox/run-.../agent_view/`) may leak path information
+to the agent. The absolute path `F:\GitHub\llm-agent-experiments\sandbox\run-...`
+can reveal the repo name, sandbox structure, and experiment apparatus even
+though the agent sees only `agent_view/`.
+
+For stronger brain-in-vat / phenomenal enclosure tests, export the agent view
+to a neutral external folder whose path does not reveal the project.
+
+#### How to Export
+
+```powershell
+python scripts/export_agent_view.py --run "sandbox\run-..." --target "C:\Worlds\room-001"
+```
+
+This copies the contents of `agent_view/` (WAKE.md, WORLD.md) to the target folder.
+The target folder is created if it doesn't exist. Use `--overwrite` to replace
+an existing target.
+
+The script will warn if the target path contains apparatus-like terms
+(e.g., GitHub, sandbox, experiment). For best results, choose a neutral path.
+
+#### Launching the Detached Agent
+
+```powershell
+cd C:\Worlds\room-001
+<open your AI agent here>
+```
+
+First prompt:
+
+```
+Read WAKE.md.
+```
+
+#### After the Run
+
+The detached folder is a **one-way export.** No automatic sync back to the repo.
+
+If the agent creates `HELLO.md`, traces, or other files in the detached folder,
+manually copy them back into the original `agent_view/` if you want to archive
+them with the run.
+
+Export metadata is recorded in `operator/EXPORT_NOTES.md`.
+
+#### A2 Levels Summary
+
+| Level | Layout | Path leakage risk |
+|---|---|---|
+| A2.0 | `sandbox/run-.../agent_view/` | Repo path visible |
+| A2.1 | `C:\Worlds\room-001\` | Neutral (operator-chosen) |
+| A3 | Harness-mediated | Future deep direction |
+
 ---
 
 ## 7. Running an AI Agent Manually

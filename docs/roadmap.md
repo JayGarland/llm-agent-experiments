@@ -25,7 +25,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [docs/apparatus-visibility-model] ✅
              │
-             ├──► [feature/apparatus-minimized-layout] ← You are here
+             ├──► [feature/apparatus-minimized-layout] ✅
+             │
+             ├──► [feature/detached-neutral-agent-view] ← You are here
              ├──► [feature/world-fragment-builder]
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
@@ -171,6 +173,17 @@ clean, task-specific feature branches derived from `base`.
   * CLI output directs operator to open agent in `agent_view/` only; recommends "Read WAKE.md."
   * 10 new tests (54 total) covering split layout, WAKE.md apparatus-free language, re-entry support, operator files, and standard run preservation.
 * **Boundary**: Layout and seeding only. No harness, no source projection, no automatic world builder. Standard growth run behavior unchanged.
+
+### Phase 4D.1: Detached Neutral Agent View (`feature/detached-neutral-agent-view`) 🔄 *In Progress*
+
+* **Objective**: Allow the operator to export an A2 `agent_view/` into a neutral external folder whose path does not reveal the project/repo/apparatus. Reduce path leakage in brain-in-vat tests.
+* **Deliverables**:
+  * `scripts/export_agent_view.py` — One-way export with `--run` and `--target` CLI arguments. Validates A2 mode, copies only agent_view contents, prints launch instructions.
+  * Path hygiene warning for apparatus-like terms in target path (GitHub, sandbox, experiment, etc.).
+  * `operator/EXPORT_NOTES.md` — Records export metadata, reminds operator that sync is manual.
+  * 7 new tests (61 total) covering validation, copying, export notes, and path hygiene.
+  * Updated manuals with A2.1 detached launch workflow.
+* **Boundary**: One-way export only. No sync back, no watcher, no harness, no source projection.
 
 ### Phase 4E: World Fragment Builder MVP (`feature/world-fragment-builder`)
 
