@@ -1,10 +1,11 @@
 # Run Condition Declarations
 
-## Purpose
-
-Run Condition Declarations are **lightweight pre-run declarations** that shape
-the experiment without turning it into a task spec. They exist to make
-experimental variables explicit and repeatable, not to prescribe outcomes.
+> **Status: Legacy — superseded by A2 base capability approach.**
+> Run conditions are now declared through the A2 WAKE.md capabilities
+> (workspace plasticity, optional search) and the `--mode` + `--library-path`
+> CLI options. See `docs/manuals/user-manual.en.md` §6.
+> The prompt module registry (`docs/prompt-modules/`) remains available
+> as reference but is not actively maintained. Retained for historical context.
 
 A good Run Condition Declaration helps distinguish:
 

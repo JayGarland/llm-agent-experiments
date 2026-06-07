@@ -1,8 +1,8 @@
 # Continuity & Continuation Model
 
-## Three-Layer Continuity
-
-Continuity is not only later-instance handoff. The framework defines three layers:
+> **Status: Legacy — superseded by `docs/manuals/user-manual.en.md` §10.**
+> Three-layer continuity is now fully covered in the user manual.
+> Retained for historical reference.
 
 | Layer | Description |
 |---|---|

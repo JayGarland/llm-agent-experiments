@@ -1,10 +1,8 @@
 # Manual Version A Run — First Usable MVP
 
-This guide explains how to perform a **manual Karpathy Version A dry run** using
-an external AI agent (Claude Code, GitHub Copilot Agent, Codex, Cursor, etc.)
-with this project's read-only source/library + writable sandbox foundation.
-
-You do **not** need automated agent execution — you act as the orchestrator.
+> **Status: Legacy — superseded by `docs/manuals/user-manual.en.md`.**
+> This was the original v0.1 step-by-step guide. The user manual is now
+> the authoritative workflow reference. Retained for historical context.
 
 ---
 
