@@ -1,7 +1,8 @@
 # Run Checklist — Manual Version A Experiment
 
-Use this checklist for every manual experiment run. Copy it into each run
-directory or keep a printed / digital copy alongside your observations.
+> **Status: Legacy — superseded by `docs/manuals/user-manual.en.md`.**
+> The current A2 workflow does not use this checklist format.
+> Retained for historical reference.
 
 ---
 
