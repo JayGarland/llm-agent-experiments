@@ -285,8 +285,14 @@ original source content. Original source filenames and paths are never exposed.
 `WAKE.md` encourages the agent to wander through a few fragments and explicitly
 says it does not need to summarize everything.
 
-The agent may browse fragments selectively. Source provenance (which original
-file maps to which fragment) is recorded only in `operator/WORLD_SOURCE_NOTE.md`.
+The agent may browse fragments selectively. First-turn catalogue/analysis is
+normal as orientation — the problem is stopping there. Repeated continuation
+can drive growth into maps, stories, guides, poems, questions, dialogues,
+tools, folders, wikilinks, reorganized paths, and new fragments.
+
+If the agent stays too analytical, use the "Move from Catalogue to Growth"
+feedback prompt in `operator/FEEDBACK_PROMPT.md`. Source provenance is
+recorded only in `operator/WORLD_SOURCE_NOTE.md`.
 
 ### Workspace Plasticity
 

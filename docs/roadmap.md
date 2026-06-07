@@ -35,8 +35,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/world-pack-fragments] ✅
              │
-             ├──► [feature/workspace-plasticity-room-morphogenesis] ← You are here
-             ├──► [feature/soil-perception-posture] (revised after 4E.25)
+             ├──► [feature/workspace-plasticity-room-morphogenesis] ✅
+             │
+             ├──► [feature/soil-growth-cycle-posture] ← You are here
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
              │
