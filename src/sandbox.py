@@ -384,6 +384,10 @@ You may continue, answer, diverge, or leave your own trace.
 
 Before pausing, leave or update `HELLO.md` for whoever or whatever
 may later find this place.
+
+If this place contains fragments, you may wander through a few
+before leaving your trace. You do not need to summarize everything.
+Follow what calls to you.
 """
 
 

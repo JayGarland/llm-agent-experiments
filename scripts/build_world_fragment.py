@@ -101,7 +101,7 @@ def list_library_files(library_root: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# WORLD.md builder
+# WORLD.md builder (fragmented world pack)
 # ---------------------------------------------------------------------------
 
 
@@ -110,14 +110,40 @@ def build_world_md(
     files: list[str],
     title: str = "World Fragment",
 ) -> str:
-    """Build world-facing WORLD.md content from source files."""
-    header = (
-        f"# {title}\n\n"
-        "You are inside the following world fragment.\n\n"
-        "The material below is the world currently available here.\n\n"
-        "---\n"
+    """
+    Build a world-facing WORLD.md entrance/index.
+
+    Does NOT contain full source content. Instead lists neutral
+    fragment paths that the agent may wander through.
+    """
+    fragment_list = "\n".join(
+        f"- fragments/fragment-{i:03d}.md" for i in range(1, len(files) + 1)
     )
-    fragments: list[str] = []
+    return (
+        f"# {title}\n\n"
+        "You are inside a world made of fragments.\n\n"
+        "There are traces here. You may wander through them.\n\n"
+        "Some fragments may connect. Some may not.\n\n"
+        "You do not need to summarize the whole world.\n\n"
+        "Read what calls to you, then leave your own trace.\n\n"
+        "## Available Fragments\n\n"
+        f"{fragment_list}\n"
+    )
+
+
+def write_fragments(
+    agent_view: Path,
+    library_root: str,
+    files: list[str],
+) -> list[Path]:
+    """
+    Write each source file as a neutral fragment in agent_view/fragments/.
+
+    Returns the list of written fragment paths.
+    """
+    frag_dir = agent_view / "fragments"
+    frag_dir.mkdir(exist_ok=True)
+    written: list[Path] = []
     for i, rel_path in enumerate(files, 1):
         resolved = resolve_safe(library_root, rel_path)
         if not resolved.exists():
@@ -126,9 +152,14 @@ def build_world_md(
             content = resolved.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             sys.exit(f"Error: cannot read file as text: {rel_path}")
-        fragments.append(f"\n## Fragment {i}\n\n{content.strip()}\n")
-
-    return header + "\n---\n".join(fragments) + "\n"
+        frag_name = f"fragment-{i:03d}.md"
+        frag_path = frag_dir / frag_name
+        frag_path.write_text(
+            f"# Fragment {i:03d}\n\n{content.strip()}\n",
+            encoding="utf-8",
+        )
+        written.append(frag_path)
+    return written
 
 
 def write_world_md(agent_view: Path, content: str) -> None:
@@ -151,8 +182,11 @@ def write_source_note(
 ) -> Path:
     """Write operator/WORLD_SOURCE_NOTE.md with provenance."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    mode = "whole-library" if is_whole_library else "selected files"
+    mode = "fragmented-world-pack" if is_whole_library else "selected-files"
     file_list = "\n".join(f"- {f}" for f in files)
+    frag_map = "\n".join(
+        f"- fragment-{i:03d}.md ← {f}" for i, f in enumerate(files, 1)
+    )
     if is_whole_library:
         rebuild_cmd = (
             f"python scripts/build_world_fragment.py "
@@ -181,6 +215,11 @@ def write_source_note(
 - Built at: {now}
 - Title: {title}
 - Target WORLD.md: {operator_dir.parent / 'agent_view' / 'WORLD.md'}
+- Fragment directory: {operator_dir.parent / 'agent_view' / 'fragments'}
+
+## Fragment Map
+
+{frag_map}
 
 ## Boundary
 
@@ -259,10 +298,12 @@ def main() -> None:
 
     # Build
     mode_label = "whole library" if is_whole_library else f"{len(selected_files)} selected"
-    print(f"Building WORLD.md from {mode_label} ({len(selected_files)} file(s))...")
-    content = build_world_md(library_path, selected_files, args.title)
-    write_world_md(agent_view, content)
-    print(f"  Written: {world_md}")
+    print(f"Building world pack from {mode_label} ({len(selected_files)} file(s))...")
+    world_content = build_world_md(library_path, selected_files, args.title)
+    write_world_md(agent_view, world_content)
+    frag_paths = write_fragments(agent_view, library_path, selected_files)
+    print(f"  WORLD.md: {world_md}")
+    print(f"  Fragments: {len(frag_paths)} file(s) in {agent_view / 'fragments'}")
 
     # Write source note
     note_path = write_source_note(

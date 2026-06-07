@@ -700,6 +700,8 @@ def test_a2_wake_md_supports_reentry():
         assert "HELLO.md" in content
         assert "traces left here" in content.lower()
         assert "may later find this place" in content.lower()
+        assert "wander through" in content.lower()
+        assert "do not need to summarize" in content.lower()
 
 
 def test_a2_operator_run_json():
@@ -867,6 +869,7 @@ def test_path_hygiene_clean_on_neutral_path():
 from scripts.build_world_fragment import (
     build_world_md,
     write_world_md,
+    write_fragments,
     write_source_note,
     resolve_safe,
     validate_a2_run,
@@ -883,11 +886,10 @@ def test_build_world_md_from_source_files():
 
         content = build_world_md(str(lib), ["one.md", "two.md"])
         assert "World Fragment" in content
-        assert "Fragment 1" in content
-        assert "Fragment 2" in content
-        assert "Content one" in content
-        assert "Content two" in content
-        assert lib_tmp not in content  # no real path exposed
+        assert "fragments/fragment-001.md" in content
+        assert "fragments/fragment-002.md" in content
+        assert "wander through them" in content.lower()
+        assert "do not need to summarize" in content.lower()
 
 
 def test_build_world_md_no_source_path_leak():
@@ -898,7 +900,7 @@ def test_build_world_md_no_source_path_leak():
 
         content = build_world_md(str(lib), ["notes.md"])
         assert str(lib) not in content
-        assert "Fragment 1" in content
+        assert "fragments/fragment-001.md" in content
 
 
 def test_write_world_md():
@@ -987,9 +989,64 @@ def test_write_source_note_whole_library():
             total_chars=5000, is_whole_library=True,
         )
         content = note.read_text(encoding="utf-8")
-        assert "whole-library" in content
+        assert "fragmented-world-pack" in content
+        assert "Fragment Map" in content
+        assert "fragment-001.md" in content
         assert "Files included: 2" in content
         assert "Total characters: 5000" in content
+
+
+def test_write_fragments_creates_neutral_files():
+    """write_fragments creates fragment-NNN.md files with neutral content."""
+    with tempfile.TemporaryDirectory() as lib_tmp, \
+         tempfile.TemporaryDirectory() as av_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "alpha.md").write_text("# Alpha\nContent.", encoding="utf-8")
+        (lib / "beta.md").write_text("# Beta\nMore.", encoding="utf-8")
+        av = Path(av_tmp)
+
+        paths = write_fragments(av, str(lib), ["alpha.md", "beta.md"])
+        assert len(paths) == 2
+        frag_dir = av / "fragments"
+        assert frag_dir.is_dir()
+        assert (frag_dir / "fragment-001.md").exists()
+        assert (frag_dir / "fragment-002.md").exists()
+
+        # Fragment content is neutral — no source path, uses Fragment 001 heading
+        c1 = (frag_dir / "fragment-001.md").read_text(encoding="utf-8")
+        assert "Fragment 001" in c1
+        assert "Content" in c1
+        assert str(lib) not in c1  # no source path
+
+
+def test_world_md_does_not_contain_full_source():
+    """WORLD.md is an entrance, not a content dump."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "big.md").write_text("A" * 5000, encoding="utf-8")
+        content = build_world_md(str(lib), ["big.md"])
+        assert "A" * 5000 not in content
+        assert "fragments/fragment-001.md" in content
+
+
+def test_export_includes_fragments():
+    """Export copies fragments/ directory to detached target."""
+    with tempfile.TemporaryDirectory() as av_tmp, \
+         tempfile.TemporaryDirectory() as tgt_tmp:
+        av = Path(av_tmp)
+        (av / "WAKE.md").write_text("# Wake", encoding="utf-8")
+        frag = av / "fragments"
+        frag.mkdir()
+        (frag / "fragment-001.md").write_text("# F1", encoding="utf-8")
+
+        target = Path(tgt_tmp) / "room-001"
+        from scripts.export_agent_view import copy_agent_view
+        copy_agent_view(av, target)
+
+        assert (target / "fragments").is_dir()
+        assert (target / "fragments" / "fragment-001.md").exists()
+        # operator/ should not be present
+        assert not (target / "operator").exists()
 
 
 # ============================================================================
