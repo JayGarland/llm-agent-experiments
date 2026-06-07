@@ -27,8 +27,9 @@ clean, task-specific feature branches derived from `base`.
              │
              ├──► [feature/apparatus-minimized-layout] ✅
              │
-             ├──► [feature/detached-neutral-agent-view] ← You are here
-             ├──► [feature/world-fragment-builder]
+             ├──► [feature/detached-neutral-agent-view] ✅
+             │
+             ├──► [feature/world-fragment-builder] ← You are here
              ├──► [feature/wake-surface]
              ├──► [experiment/first-a2-comparison-run]
              │
@@ -184,6 +185,16 @@ clean, task-specific feature branches derived from `base`.
   * 7 new tests (61 total) covering validation, copying, export notes, and path hygiene.
   * Updated manuals with A2.1 detached launch workflow.
 * **Boundary**: One-way export only. No sync back, no watcher, no harness, no source projection.
+
+### Phase 4E: World Fragment Builder MVP (`feature/world-fragment-builder`) 🔄 *In Progress*
+
+* **Objective**: Generate `agent_view/WORLD.md` from selected source/library files without exposing the source path. Support one-command A2 preparation with optional detached export.
+* **Deliverables**:
+  * `scripts/build_world_fragment.py` — Reads source files, builds WORLD.md with neutral Fragment labels, writes operator/WORLD_SOURCE_NOTE.md. Prevents path breakout.
+  * Updated `scripts/prepare_manual_run.py` — `--world-files`, `--export-target`, `--overwrite-world`, `--overwrite-export` for one-command A2 flow.
+  * Source path never exposed in WORLD.md. Provenance tracked in WORLD_SOURCE_NOTE.md.
+  * 8 new tests (68 total).
+* **Boundary**: Deterministic concatenation only. No LLM, no watcher, no sync loop.
 
 ### Phase 4E: World Fragment Builder MVP (`feature/world-fragment-builder`)
 
