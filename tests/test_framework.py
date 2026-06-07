@@ -861,6 +861,101 @@ def test_path_hygiene_clean_on_neutral_path():
 
 
 # ============================================================================
+# World fragment builder tests (feature/world-fragment-builder)
+# ============================================================================
+
+from scripts.build_world_fragment import (
+    build_world_md,
+    write_world_md,
+    write_source_note,
+    resolve_safe,
+    validate_a2_run,
+)
+
+
+def test_build_world_md_from_source_files():
+    """build_world_md produces world-facing content from source files."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp)
+        (lib / "one.md").write_text("# One\n\nContent one.", encoding="utf-8")
+        (lib / "two.md").write_text("# Two\n\nContent two.", encoding="utf-8")
+
+        content = build_world_md(str(lib), ["one.md", "two.md"])
+        assert "World Fragment" in content
+        assert "Fragment 1" in content
+        assert "Fragment 2" in content
+        assert "Content one" in content
+        assert "Content two" in content
+        assert lib_tmp not in content  # no real path exposed
+
+
+def test_build_world_md_no_source_path_leak():
+    """WORLD.md does not include the real source path."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp)
+        (lib / "notes.md").write_text("Some notes.", encoding="utf-8")
+
+        content = build_world_md(str(lib), ["notes.md"])
+        assert str(lib) not in content
+        assert "Fragment 1" in content
+
+
+def test_write_world_md():
+    """write_world_md writes content to agent_view/WORLD.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        av = Path(tmp)
+        write_world_md(av, "# World\n\nContent.")
+        world = av / "WORLD.md"
+        assert world.exists()
+        assert "Content" in world.read_text(encoding="utf-8")
+
+
+def test_write_source_note_records_provenance():
+    """WORLD_SOURCE_NOTE.md records source path and files on operator side."""
+    with tempfile.TemporaryDirectory() as tmp:
+        op = Path(tmp)
+        note = write_source_note(op, "/fake/library", ["a.md", "b.md"], "World")
+        assert note.exists()
+        content = note.read_text(encoding="utf-8")
+        assert "/fake/library" in content
+        assert "a.md" in content
+        assert "b.md" in content
+        assert "operator-side provenance" in content
+        assert "build_world_fragment.py" in content
+
+
+def test_resolve_safe_breakout_rejected():
+    """Path breakout from library root is rejected."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        with pytest.raises(SystemExit):
+            resolve_safe(lib_tmp, "../escape.md")
+
+
+def test_resolve_safe_valid_path():
+    """Valid relative paths resolve correctly."""
+    with tempfile.TemporaryDirectory() as lib_tmp:
+        lib = Path(lib_tmp).resolve()
+        (lib / "sub").mkdir()
+        (lib / "sub" / "f.md").write_text("ok", encoding="utf-8")
+        resolved = resolve_safe(str(lib), "sub/f.md")
+        assert resolved == lib / "sub" / "f.md"
+
+
+def test_validate_a2_run_rejects_standard_growth():
+    """validate_a2_run rejects non-A2 runs."""
+    with tempfile.TemporaryDirectory() as tmp:
+        run = Path(tmp) / "run-test"
+        run.mkdir()
+        (run / "agent_view").mkdir()
+        (run / "operator").mkdir()
+        (run / "operator" / "run.json").write_text(
+            json.dumps({"mode": "standard-growth"}), encoding="utf-8"
+        )
+        with pytest.raises(SystemExit):
+            validate_a2_run(run)
+
+
+# ============================================================================
 # Per-run library path override (feature/run-condition-declaration patch)
 # ============================================================================
 
